@@ -1,17 +1,13 @@
 package cn.skygard.happyoj.view.activity
 
-import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
-import android.view.ViewAnimationUtils
+import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.Animation
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
@@ -28,6 +24,7 @@ import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.view.fragment.SubmitsFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 
 class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
 
@@ -42,6 +39,10 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 启用转场动画
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
         val firstStart = intent.getBooleanExtra("firstStart", true)
         initView(firstStart)
@@ -120,7 +121,7 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                 )
                 anim.interpolator = AccelerateDecelerateInterpolator()
                 anim.startDelay = 15
-                anim.duration = 900
+                anim.duration = 600
                 anim.start()
             }
         }
@@ -128,17 +129,13 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         binding.run {
             searchOpen.setOnClickListener {
                 Log.d("MainActivity", "open search")
-                ivDrawerOpen.drawable.run {
-                    if (this is Animatable) {
-                        this.start()
-                    }
-                }
+                binding.searchBar.transitionName = "search"
+                SearchActivity.start(this@MainActivity, binding.searchBar, "search")
             }
             ivProfileOpen.setOnClickListener {
                 Log.d("MainActivity", "open profile")
             }
             ivDrawerOpen.setOnClickListener {
-                ivDrawerOpen.setImageResource(R.drawable.ic_anim_menu_2_back)
                 drawer.openDrawer(binding.navView)
             }
 
