@@ -5,6 +5,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#B4B4B4</color>
-    <color name="prime_color_dark_variant">#E7EAF3</color>
-    <color name="prime_color_dark">#FAFAFA</color>
+    <color name="prime_color_dark_variant">#46484A</color>
+    <color name="prime_color_dark">#292A2B</color>
 </resources>

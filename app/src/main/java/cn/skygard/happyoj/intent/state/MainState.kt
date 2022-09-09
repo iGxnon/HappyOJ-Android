@@ -1,11 +1,17 @@
 package cn.skygard.happyoj.intent.state
 
-data class MainState(val name: String)
+import android.view.View
 
-sealed class MainEvent {
+class MainState
 
+sealed class MainSharedEvent {
+    data class ShowSnack(
+        val mess: String,
+        val action: String = "",
+        val actionCallback: View.OnClickListener = View.OnClickListener {  }
+    ) : MainSharedEvent()
 }
 
 sealed class MainAction {
-
+    data class TriggerSharedEvent(val event: MainSharedEvent) : MainAction()
 }

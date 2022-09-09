@@ -1,14 +1,19 @@
 <resources>
     <string name="app_name">HappyOJ</string>
-    <string name="title_activity_main2">MainActivity2</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="account">账户</string>
+    <string name="submits">提交记录</string>
+    <string name="tasks">任务列表</string>
+    <string name="shortcutimage">shortcut_image</string>
+    <string name="skip">跳过</string>
+    <string name="search_hint">搜索实验</string>
+    <string name="all_tasks">全部实验</string>
+    <string name="nothing">空空如也~</string>
+    <string name="test_email">114514@qq.com</string>
+    <string name="favor">收藏</string>
+    <string name="category_lab">实验</string>
+    <string name="setting">设置</string>
+    <string name="help">帮助</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="submits_result">提交结果</string>
 </resources>

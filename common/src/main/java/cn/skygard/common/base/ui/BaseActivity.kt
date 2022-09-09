@@ -11,11 +11,15 @@ import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import cn.skygard.common.R
+import cn.skygard.common.base.ext.color
 import java.io.Serializable
 
 /**
@@ -54,6 +58,14 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
     override fun onCreate(savedInstanceState: Bundle?) {
         mIsActivityRebuilt = savedInstanceState != null
         super.onCreate(savedInstanceState)
+        // 设置 localNightMode
+        if (delegate.localNightMode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
+            if (applicationContext.resources.configuration.uiMode != 0x21) {
+                delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+            } else {
+                delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+            }
+        }
         if (isPortraitScreen) { // 锁定竖屏
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
@@ -73,7 +85,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
         // 不同布局该属性效果不同，请给合适的布局添加
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
-        windowInsetsController?.isAppearanceLightStatusBars = true // 设置状态栏字体颜色为黑色
+        windowInsetsController?.isAppearanceLightStatusBars = delegate.localNightMode == AppCompatDelegate.MODE_NIGHT_NO // 设置状态栏字体颜色为当前模式
         window.statusBarColor = Color.TRANSPARENT //把状态栏颜色设置成透明
     }
 

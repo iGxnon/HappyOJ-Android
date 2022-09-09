@@ -1,41 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.activity.MainActivity">
+    android:layout_height="match_parent">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/splashScreen"
+        android:background="?colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_gravity="center"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_start"/>
+    </FrameLayout>
 
-        <com.google.android.material.appbar.AppBarLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:visibility="visible"
+        android:id="@+id/drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.activity.MainActivity">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+            <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                app:title="News"
-                app:titleTextColor="@color/white" />
+                android:layout_height="wrap_content">
 
-        </com.google.android.material.appbar.AppBarLayout>
+                <!--todo 抽离-->
+                <FrameLayout
+                    android:id="@+id/funcToolbar"
+                    android:visibility="visible"
+                    android:background="?colorPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    android:padding="15dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        app:cardBackgroundColor="?colorPrimaryVariant"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="50dp">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_marginStart="7dp"
+                            android:layout_marginEnd="7dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/ivDrawerOpen"
+                                android:layout_weight="1"
+                                android:background="?android:attr/selectableItemBackgroundBorderless"
+                                android:padding="10dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_menu_24"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:ignore="ContentDescription" />
+
+                            <FrameLayout
+                                android:layout_weight="70"
+                                android:layout_width="0dp"
+                                android:id="@+id/searchOpen"
+                                android:layout_height="match_parent">
+                                <TextView
+                                    android:layout_gravity="center|start"
+                                    android:textSize="17sp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/search_hint"
+                                    android:textColor="?colorOnPrimary"/>
+                            </FrameLayout>
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/ivProfileOpen"
+                                android:layout_weight="1"
+                                android:padding="10dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/test_avatar"
+                                android:layout_width="48dp"
+                                android:layout_height="50dp"
+                                app:strokeColor="?colorPrimary"
+                                app:strokeWidth="1dp"
+                                android:scaleType="centerCrop"
+                                app:shapeAppearance="@style/CircleStyle"
+                                tools:ignore="ContentDescription"/>
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </com.google.android.material.card.MaterialCardView>
+                </FrameLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:visibility="gone"
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?colorPrimary"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    app:title="HappyOJ"
+                    app:titleTextColor="?colorOnPrimary" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/frag_container"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:layout_gravity="start"
+            android:id="@+id/nav_view"
+            app:menu="@menu/nav_menu"
+            android:backgroundTint="?colorSecondaryVariant"
+            android:background="?colorSecondaryVariant"
+            app:itemTextColor="?colorOnPrimary"
+            app:itemIconTint="?colorOnPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
 
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:layout_gravity="start"
-        android:id="@+id/nav_view"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
-
-
-
-</androidx.drawerlayout.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
+</FrameLayout>

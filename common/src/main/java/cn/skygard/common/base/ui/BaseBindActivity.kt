@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.CallSuper
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.viewbinding.ViewBinding
 import cn.skygard.common.base.ext.getGenericClass
 import cn.skygard.common.base.ext.lazyUnlock

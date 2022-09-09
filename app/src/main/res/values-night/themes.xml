@@ -2,15 +2,24 @@
     <!-- Base application theme. -->
     <style name="Theme.HappyOJ" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_200</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/prime_color_dark</item>
+        <item name="colorPrimaryVariant">@color/prime_color_dark_variant</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondary">@color/black</item>
+        <item name="colorSecondaryVariant">@color/prime_color_dark_variant</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Navigation bar color. -->
+        <item name="android:navigationBarColor">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.HappyOJ.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.HappyOJ.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.HappyOJ.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
