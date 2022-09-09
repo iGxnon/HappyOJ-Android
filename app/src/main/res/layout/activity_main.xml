@@ -61,7 +61,7 @@
                                 android:background="?android:attr/selectableItemBackgroundBorderless"
                                 android:padding="10dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_24"
+                                android:src="@drawable/ic_anim_menu_2_back"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 tools:ignore="ContentDescription" />
@@ -103,7 +103,7 @@
                     android:visibility="gone"
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="?attr/actionBarSize"
                     android:background="?colorPrimary"
                     app:layout_scrollFlags="scroll|enterAlways|snap"
                     app:title="HappyOJ"

@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.HappyOJ" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/prime_color_dark</item>
-        <item name="colorPrimaryVariant">@color/prime_color_dark_variant</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/prime_color</item>
+        <item name="colorPrimaryVariant">@color/prime_color_variant</item>
+        <item name="colorOnPrimary">@color/prim_on_color</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/black</item>
-        <item name="colorSecondaryVariant">@color/prime_color_dark_variant</item>
+        <item name="colorSecondaryVariant">@color/prime_color_variant</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">?attr/colorPrimary</item>

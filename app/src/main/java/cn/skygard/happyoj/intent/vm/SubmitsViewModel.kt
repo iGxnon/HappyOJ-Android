@@ -32,7 +32,7 @@ class SubmitsViewModel :
             copy(fetchState = FetchState.Fetching)
         }
         viewModelScope.launch {
-            delay(200)
+            delay(300)
             val submits = listOf(
                 SubmitsItem(
                     submitId = 10,

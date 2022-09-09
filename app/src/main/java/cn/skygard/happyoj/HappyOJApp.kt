@@ -5,7 +5,6 @@ import android.os.Looper
 import cn.skygard.common.base.BaseApp
 import cn.skygard.happyoj.view.activity.CrashActivity
 
-
 class HappyOJApp : BaseApp() {
 
     override fun onCreate() {

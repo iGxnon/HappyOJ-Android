@@ -18,12 +18,8 @@ class TasksViewModel :
         Log.d("TasksViewModel", "received an action $action")
         when (action) {
             is TasksAction.OnSwipeRefresh -> fetchTasks()
-            is TasksAction.ItemClicked -> {
-                // TODO Enter
-                mViewEvents.triggerEvent(MainSharedEvent.ShowSnack("You click ${action.item.title}"))
-            }
             is TasksAction.AddToFavor -> {
-                mViewEvents.triggerEvent(MainSharedEvent.ShowSnack("已经添加进收藏"))
+                mViewEvents.triggerEvent(MainSharedEvent.ShowSnack("已经添加进收藏", "取消"))
             }
         }
     }
@@ -35,7 +31,7 @@ class TasksViewModel :
         }
         // for test
         viewModelScope.launch {
-            delay(1000)
+            delay(300)
             val tasks = listOf(
                 TasksItem(
                     taskId = 1,

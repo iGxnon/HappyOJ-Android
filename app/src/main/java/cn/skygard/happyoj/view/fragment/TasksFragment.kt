@@ -12,6 +12,8 @@ import cn.skygard.happyoj.databinding.FragmentTasksBinding
 import cn.skygard.happyoj.intent.state.*
 import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.intent.vm.TasksViewModel
+import cn.skygard.happyoj.view.activity.LabActivity
+import cn.skygard.happyoj.view.activity.MainActivity
 import cn.skygard.happyoj.view.adapter.TasksRvAdapter
 
 class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>() {
@@ -19,7 +21,7 @@ class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>()
     private val parentViewModel by activityViewModels<MainViewModel>()
     private val tasksRvAdapter by lazyUnlock {
         TasksRvAdapter {
-            viewModel.dispatch(TasksAction.ItemClicked(this))
+            LabActivity.start(requireContext(), this)
         }
     }
 

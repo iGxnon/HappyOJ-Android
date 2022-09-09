@@ -8,7 +8,6 @@ data class TasksState (
 )
 
 sealed class TasksAction {
-    data class ItemClicked(val item: TasksItem) : TasksAction()
     object OnSwipeRefresh : TasksAction()
     data class AddToFavor(val item: TasksItem) : TasksAction()
 }

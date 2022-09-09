@@ -4,19 +4,18 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.ViewAnimationUtils
-import android.view.ViewTreeObserver
-import android.view.animation.LinearInterpolator
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
+import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.base.ext.visible
@@ -29,12 +28,18 @@ import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.view.fragment.SubmitsFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
 
 class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
 
     override val isCancelStatusBar: Boolean
-        get() = true
+        get() = false
+
+    override val statusBarColor: Int
+        get() = ContextCompat.getColor(this, R.color.prime_color)
+
+    private val navHeader by lazyUnlock {
+        binding.navView.inflateHeaderView(R.layout.nav_header)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,60 +47,6 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         initView(firstStart)
         initViewStates()
         initViewEvents()
-        if (!firstStart) {
-            switchThemeAnim()
-        }
-    }
-
-    private var onGlobalLayout : ViewTreeObserver.OnGlobalLayoutListener? = null
-    private var mAnimReveal : Animator? = null
-
-    private val navHeader by lazyUnlock {
-        binding.navView.inflateHeaderView(R.layout.nav_header)
-    }
-
-    @SuppressLint("ObsoleteSdkInt")
-    private fun switchThemeAnim() {
-        val v = window.decorView
-        v.visible()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return
-        }
-
-        onGlobalLayout = ViewTreeObserver.OnGlobalLayoutListener { //此时既是开始揭露动画的最佳时机
-            mAnimReveal?.removeAllListeners()
-            mAnimReveal?.cancel()
-            val pivotView = navHeader.findViewById<AppCompatImageView>(R.id.iv_switch_dayNight)
-            mAnimReveal = ViewAnimationUtils.createCircularReveal(v,
-                pivotView.x.toInt(),
-                pivotView.y.toInt(),
-                0f,
-                v.height.toFloat()
-            )
-            mAnimReveal?.duration = 400
-            mAnimReveal?.addListener(onEnd = {
-                onGlobalLayout?.let {
-                    // 我们需要在揭露动画进行完后及时移除回调
-                    v.viewTreeObserver.removeOnGlobalLayoutListener(it)
-                }
-            })
-            mAnimReveal?.start()
-        }
-        v.viewTreeObserver.addOnGlobalLayoutListener(onGlobalLayout)
-    }
-
-    private fun showStatusBar() {
-        val window = this.window
-        val decorView = window.decorView
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-        val windowInsetsController = WindowCompat.getInsetsController(window, decorView)
-        if (delegate.localNightMode == AppCompatDelegate.MODE_NIGHT_NO) {
-            Log.d("MainActivity", "Set status bar into light mode(set text into black)")
-        } else {
-            Log.d("MainActivity", "Set status bar into dark mode(set text into white)")
-        }
-        windowInsetsController?.isAppearanceLightStatusBars = delegate.localNightMode == AppCompatDelegate.MODE_NIGHT_NO
-        window.statusBarColor = ContextCompat.getColor(this, R.color.prime_color_dark)
     }
 
     /**
@@ -112,6 +63,7 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun initView(firstStart: Boolean = true) {
         if (firstStart) {
             binding.splashScreen.visible()
@@ -119,14 +71,12 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             binding.splashScreen.postDelayed({
                 binding.splashScreen.gone()
                 binding.drawer.visible()
-                Log.d("MainActivity", "entered MainActivity")
-                showStatusBar()
+                Log.d("MainActivity", "first entered MainActivity")
             }, 2000)
         } else {
             binding.splashScreen.gone()
             binding.drawer.visible()
             Log.d("MainActivity", "entered MainActivity")
-            showStatusBar()
         }
 
         setSupportActionBar(binding.toolbar)
@@ -142,48 +92,83 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         }
 
         navHeader.run {
-            findViewById<AppCompatImageView>(R.id.iv_switch_dayNight).setOnClickListener {
-                if (delegate.localNightMode == AppCompatDelegate.MODE_NIGHT_NO) { // 白天
-                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-                } else {
+            findViewById<AppCompatImageView>(R.id.iv_switch_dayNight).setOnClickListener { view ->
+                if (BaseApp.darkMode) { // 黑夜
                     delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+                    BaseApp.darkMode = false
+                } else {
+                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+                    BaseApp.darkMode = true
                 }
+                super.switchDayNight()
                 intent.putExtra("firstStart", false)
-                recreate()
-                Log.d("MainActivity", "switch theme")
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    window.decorView.invalidate()
+                    return@setOnClickListener
+                }
+                val pivot = IntArray(2)
+                view.getLocationInWindow(pivot)
+                // 通过展开动画来触发 View 树重新绘制，不过有时候会卡一下，很不舒服（
+                // 可以尝试优化 MainActivity 的 UI 结构加快加载，应该就不会太卡了
+                // TODO 优化
+                val anim = ViewAnimationUtils.createCircularReveal(
+                    window.decorView,
+                    pivot[0] + view.width / 2,
+                    pivot[1] + view.height / 2,
+                    0f,
+                    window.decorView.height.toFloat()
+                )
+                anim.interpolator = AccelerateDecelerateInterpolator()
+                anim.startDelay = 15
+                anim.duration = 900
+                anim.start()
             }
         }
 
-        binding.ivDrawerOpen.setOnClickListener {
-            binding.drawer.openDrawer(binding.navView)
-        }
-
-        binding.navView.apply {
-            setCheckedItem(R.id.nav_tasks)
-            setNavigationItemSelectedListener {
-                // start new activity/fragment here
-                when (it.itemId) {
-                    R.id.nav_account -> {
-                        Log.d("MainActivity", "navigation to account")
-                        switchToolbar(true)
-                    }
-                    R.id.nav_tasks -> {
-                        Log.d("MainActivity", "navigation to tasks")
-                        switchToolbar(false)
-                        replaceFragment(R.id.frag_container) {
-                            TasksFragment.newInstance()
-                        }
-                    }
-                    R.id.nav_submits -> {
-                        Log.d("MainActivity", "navigation to submits")
-                        switchToolbar(true)
-                        replaceFragment(R.id.frag_container) {
-                            SubmitsFragment.newInstance()
-                        }
+        binding.run {
+            searchOpen.setOnClickListener {
+                Log.d("MainActivity", "open search")
+                ivDrawerOpen.drawable.run {
+                    if (this is Animatable) {
+                        this.start()
                     }
                 }
-                binding.drawer.closeDrawer(binding.navView)
-                true
+            }
+            ivProfileOpen.setOnClickListener {
+                Log.d("MainActivity", "open profile")
+            }
+            ivDrawerOpen.setOnClickListener {
+                ivDrawerOpen.setImageResource(R.drawable.ic_anim_menu_2_back)
+                drawer.openDrawer(binding.navView)
+            }
+
+            navView.apply {
+                setCheckedItem(R.id.nav_tasks)
+                setNavigationItemSelectedListener {
+                    // start new activity/fragment here
+                    when (it.itemId) {
+                        R.id.nav_account -> {
+                            Log.d("MainActivity", "navigation to account")
+                            switchToolbar(true)
+                        }
+                        R.id.nav_tasks -> {
+                            Log.d("MainActivity", "navigation to tasks")
+                            switchToolbar(false)
+                            replaceFragment(R.id.frag_container) {
+                                TasksFragment.newInstance()
+                            }
+                        }
+                        R.id.nav_submits -> {
+                            Log.d("MainActivity", "navigation to submits")
+                            switchToolbar(true)
+                            replaceFragment(R.id.frag_container) {
+                                SubmitsFragment.newInstance()
+                            }
+                        }
+                    }
+                    binding.drawer.closeDrawer(binding.navView)
+                    true
+                }
             }
         }
     }

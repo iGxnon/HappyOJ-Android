@@ -5,6 +5,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#B4B4B4</color>
-    <color name="prime_color_dark_variant">#E7EAF3</color>
-    <color name="prime_color_dark">#FAFAFA</color>
+    <color name="red">#FF1D1D</color>
+    <color name="purple_bg_tint">#80813BE4</color>
+    <color name="yellow_bg_tint">#7AFDDC00</color>
+    <color name="pink_bg_tint">#7AECB1B1</color>  <!-- 粉粉的可爱捏 -->
+    <color name="green_bg_tint">#7AD0ED9A</color>
+    <color name="prime_color_variant">#E7EAF3</color>
+    <color name="prime_color">#FAFAFA</color>
+    <color name="prim_on_color">#FF000000</color>
 </resources>

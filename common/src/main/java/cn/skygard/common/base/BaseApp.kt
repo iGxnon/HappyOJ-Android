@@ -3,6 +3,7 @@ package cn.skygard.common.base
 import android.app.Application
 import android.content.Context
 import androidx.annotation.CallSuper
+import kotlin.properties.Delegates
 
 /**
  * kim.bifrost.lib_common.BaseApp
@@ -19,6 +20,9 @@ open class BaseApp : Application() {
     }
 
     companion object {
+        // 全局主题
+        var darkMode by Delegates.notNull<Boolean>()
+
         lateinit var appContext: Context
             private set
     }

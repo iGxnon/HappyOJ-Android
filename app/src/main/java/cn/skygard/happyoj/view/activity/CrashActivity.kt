@@ -3,9 +3,13 @@ package cn.skygard.happyoj.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import cn.skygard.common.base.ext.asString
 import cn.skygard.common.base.ui.BaseActivity
+import cn.skygard.happyoj.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import kotlin.system.exitProcess
 
 class CrashActivity : BaseActivity() {
@@ -22,6 +26,11 @@ class CrashActivity : BaseActivity() {
             .setPositiveButton("退出应用") { _, _ ->
                 finish()
                 exitProcess(0)
+            }.run {
+                val dialog = create()
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(this@CrashActivity, R.color.prim_on_color))
+                dialog
             }.show()
     }
 

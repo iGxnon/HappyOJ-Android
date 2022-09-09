@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
@@ -19,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import cn.skygard.common.R
+import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.color
 import java.io.Serializable
 
@@ -47,6 +49,9 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
     protected open val isCancelStatusBar: Boolean
         get() = true
 
+    protected open val statusBarColor: Int
+        get() = ContextCompat.getColor(this, androidx.appcompat.R.color.primary_material_dark)
+
     /**
      * 是否处于转屏或异常重建后的 Activity 状态
      */
@@ -57,22 +62,52 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         mIsActivityRebuilt = savedInstanceState != null
-        super.onCreate(savedInstanceState)
         // 设置 localNightMode
         if (delegate.localNightMode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
-            if (applicationContext.resources.configuration.uiMode != 0x21) {
-                delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
-            } else {
-                delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+            // 点开 APP
+            val sp = getSharedPreferences("settings", 0)
+            when (sp.getInt("darkMode", 0)) {
+                0 -> {
+                    Log.d("MainActivity", "here")
+                    if (applicationContext.resources.configuration.uiMode != 0x21) {
+                        delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+                        BaseApp.darkMode = false
+                    } else {
+                        delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+                        BaseApp.darkMode = true
+                    }
+                }
+                1 -> {  // 白天
+                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+                    BaseApp.darkMode = false
+                }
+                -1 -> {  // 黑夜
+                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+                    BaseApp.darkMode = true
+                }
             }
         }
+        super.onCreate(savedInstanceState)
         if (isPortraitScreen) { // 锁定竖屏
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
         if (isCancelStatusBar) { // 沉浸式状态栏
             cancelStatusBar()
+        } else {
+            // 刷新状态栏
+            refreshStatusBar()
         }
+    }
+
+    fun switchDayNight() {
+        val editor = getSharedPreferences("settings", 0).edit()
+        editor.putInt("darkMode", if (BaseApp.darkMode) -1 else 1)
+        editor.apply()
+    }
+
+    private fun refreshStatusBar() {
+        window.statusBarColor = statusBarColor
     }
 
     private fun cancelStatusBar() {

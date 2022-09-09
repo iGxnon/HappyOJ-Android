@@ -16,4 +16,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="submits_result">提交结果</string>
+    <string name="refresh">刷新</string>
+    <string name="feedback">反馈</string>
+    <string name="load_fail">加载失败，点击重试</string>
+    <string name="feedback_detail">反馈内容：</string>
+    <string name="contact_email">联系邮箱：</string>
 </resources>

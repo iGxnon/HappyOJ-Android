@@ -4,14 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.17325227963525835" />
+        <entry key="app/src/main/res/drawable-night/ic_dark_light_24.xml" value="0.2025" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.146" />
         <entry key="app/src/main/res/drawable/ic_account_box_24.xml" value="0.256" />
+        <entry key="app/src/main/res/drawable/ic_anim_back_2_menu.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ic_anim_menu.xml" value="0.1795" />
         <entry key="app/src/main/res/drawable/ic_anim_menu_2_back.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_arrow_back_24.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_baseline_menu_open_24.xml" value="0.2565" />
         <entry key="app/src/main/res/drawable/ic_baseline_menu_open_36.xml" value="0.2565" />
         <entry key="app/src/main/res/drawable/ic_cross.xml" value="0.2555" />
+        <entry key="app/src/main/res/drawable/ic_dark_light_24.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_favor_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_help_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.25" />
@@ -21,18 +24,21 @@
         <entry key="app/src/main/res/drawable/ic_menu_gallery.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/ic_menu_open_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable/ic_refresh_24.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_settings_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_start.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_submits_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_tasks_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_crash.xml" value="0.32708333333333334" />
+        <entry key="app/src/main/res/layout/activity_lab.xml" value="0.37092391304347827" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/activity_profile.xml" value="0.37182971014492755" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.32708333333333334" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.1640625" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.3302083333333333" />
+        <entry key="app/src/main/res/layout/dialog_feedback.xml" value="0.37092391304347827" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/fragment_slideshow.xml" value="0.3302083333333333" />
@@ -42,6 +48,7 @@
         <entry key="app/src/main/res/layout/item_tasks.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/nav_header_main.xml" value="0.3302083333333333" />
+        <entry key="app/src/main/res/menu/lab_menu.xml" value="0.375" />
         <entry key="app/src/main/res/menu/nav_menu.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/xml/network_config.xml" value="0.3260416666666667" />
       </map>
