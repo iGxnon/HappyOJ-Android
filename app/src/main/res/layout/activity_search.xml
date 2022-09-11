@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorPrimary"
     tools:context=".view.activity.SearchActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -63,33 +64,10 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:background="?colorPrimary"
-        android:orientation="vertical"
+    <androidx.fragment.app.FragmentContainerView
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:id="@+id/frag_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <TextView
-            android:id="@+id/tv_history"
-            android:visibility="visible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="最近搜索记录"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:padding="15dp"
-            android:textColor="?colorOnPrimary"
-            tools:ignore="HardcodedText" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

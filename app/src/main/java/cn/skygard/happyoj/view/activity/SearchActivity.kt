@@ -6,32 +6,34 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageButton
 import android.widget.ImageView
 import cn.skygard.happyoj.R
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
-import androidx.core.view.get
-import androidx.core.view.size
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.invisible
 import cn.skygard.common.base.ext.visible
 import cn.skygard.common.base.ui.BaseBindActivity
+import cn.skygard.common.mvi.BaseVmBindActivity
+import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.databinding.ActivitySearchBinding
+import cn.skygard.happyoj.intent.vm.SearchViewModel
+import cn.skygard.happyoj.view.fragment.SearchFragment
+import cn.skygard.happyoj.view.fragment.SearchHistoryFragment
 import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 
-class SearchActivity : BaseBindActivity<ActivitySearchBinding>() {
+class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding>() {
 
     override val isCancelStatusBar: Boolean
         get() = false
@@ -48,6 +50,11 @@ class SearchActivity : BaseBindActivity<ActivitySearchBinding>() {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         super.onCreate(savedInstanceState)
+        initAnim()
+        initView()
+    }
+
+    private fun initAnim() {
         binding.searchBar.transitionName = intent.getStringExtra("transition_name")
         window.sharedElementEnterTransition = MaterialContainerTransform().apply {
             addTarget(binding.searchBar)
@@ -57,10 +64,12 @@ class SearchActivity : BaseBindActivity<ActivitySearchBinding>() {
             addTarget(binding.searchBar)
             duration = 300L
         }
-        initView()
     }
 
     private fun initView() {
+        replaceFragment(R.id.frag_container) {
+            SearchHistoryFragment.newInstance()
+        }
         binding.run {
             setSupportActionBar(searchBar)
             supportActionBar?.run {
@@ -80,10 +89,18 @@ class SearchActivity : BaseBindActivity<ActivitySearchBinding>() {
 
             // 清除键动态显示
             etInput.addTextChangedListener {
-                if (it?.isNotEmpty() == true) {
+                if (it?.isNotEmpty() == true && binding.ivCleaner.visibility > View.VISIBLE) {
                     binding.ivCleaner.visible()
+                    replaceFragment(R.id.frag_container) {
+                        SearchFragment.newInstance()
+                    }
+                } else if (it?.isNotEmpty() == true) {
+//                    viewModel.dispatch(SearchAction.StartQuickSearch)
                 } else {
                     binding.ivCleaner.invisible()
+                    replaceFragment(R.id.frag_container) {
+                        SearchHistoryFragment.newInstance()
+                    }
                 }
             }
             ivCleaner.setOnClickListener {
@@ -94,6 +111,7 @@ class SearchActivity : BaseBindActivity<ActivitySearchBinding>() {
                 val keyword = tv.text
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     Log.d("SearchActivity", "search for $keyword")
+//                    viewModel.dispatch(SearchAction.StartSearch)
                 }
                 false
             }
@@ -105,7 +123,7 @@ class SearchActivity : BaseBindActivity<ActivitySearchBinding>() {
                     (this as InputMethodManager).showSoftInput(binding.etInput,
                         InputMethodManager.SHOW_IMPLICIT)
                 }
-            }, 350)
+            }, 380)
         }
     }
 

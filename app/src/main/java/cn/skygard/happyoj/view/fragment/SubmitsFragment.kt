@@ -18,7 +18,7 @@ class SubmitsFragment : BaseVmBindFragment<SubmitsViewModel, FragmentSubmitsBind
 
     private val parentViewModel by activityViewModels<MainViewModel>()
     private val submitsRvAdapter by lazyUnlock {
-        SubmitsRvAdapter ()
+        SubmitsRvAdapter()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
