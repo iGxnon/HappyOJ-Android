@@ -4,14 +4,22 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.17325227963525835" />
+        <entry key="../../../../private/var/folders/p6/1lbrnkf91h79qsylsdr7m2vh0000gn/T/drawable-temp/fake_of_ic_selector_arrow_down_up.xml" value="0.1" />
+        <entry key="../../../../private/var/folders/p6/1lbrnkf91h79qsylsdr7m2vh0000gn/T/drawable-temp/fake_of_ic_selector_arrow_down_up1.xml" value="0.1965" />
+        <entry key="../../../../private/var/folders/p6/1lbrnkf91h79qsylsdr7m2vh0000gn/T/drawable-temp/fake_of_ic_selector_arrow_down_up3.xml" value="1.0" />
         <entry key="app/src/main/res/drawable-night/ic_dark_light_24.xml" value="0.2025" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.146" />
         <entry key="app/src/main/res/drawable/bg_search_view.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ic_account_box_24.xml" value="0.256" />
+        <entry key="app/src/main/res/drawable/ic_add_24.xml" value="0.1965" />
+        <entry key="app/src/main/res/drawable/ic_anim_arrow_down_up.xml" value="0.1965" />
+        <entry key="app/src/main/res/drawable/ic_anim_arrow_up_down.xml" value="0.1565" />
         <entry key="app/src/main/res/drawable/ic_anim_back_2_menu.xml" value="0.1785" />
         <entry key="app/src/main/res/drawable/ic_anim_menu.xml" value="0.1795" />
         <entry key="app/src/main/res/drawable/ic_anim_menu_2_back.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_arrow_back_24.xml" value="0.2555" />
+        <entry key="app/src/main/res/drawable/ic_arrow_down_24.xml" value="0.1965" />
+        <entry key="app/src/main/res/drawable/ic_arrow_up_24.xml" value="0.1795" />
         <entry key="app/src/main/res/drawable/ic_baseline_menu_open_24.xml" value="0.2565" />
         <entry key="app/src/main/res/drawable/ic_baseline_menu_open_36.xml" value="0.2565" />
         <entry key="app/src/main/res/drawable/ic_clear_24.xml" value="0.1985" />
@@ -28,6 +36,8 @@
         <entry key="app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.25" />
         <entry key="app/src/main/res/drawable/ic_refresh_24.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_settings_24.xml" value="0.256" />
+        <entry key="app/src/main/res/drawable/ic_star_24.xml" value="0.1965" />
+        <entry key="app/src/main/res/drawable/ic_star_border_24.xml" value="0.1965" />
         <entry key="app/src/main/res/drawable/ic_start.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_submits_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_tasks_24.xml" value="0.256" />
@@ -40,6 +50,7 @@
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.32708333333333334" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.1640625" />
+        <entry key="app/src/main/res/layout/card_checkpoint_result.xml" value="0.37228260869565216" />
         <entry key="app/src/main/res/layout/content_main.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/dialog_feedback.xml" value="0.37092391304347827" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.3302083333333333" />
@@ -47,6 +58,8 @@
         <entry key="app/src/main/res/layout/fragment_slideshow.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/fragment_submits.xml" value="0.37182971014492755" />
         <entry key="app/src/main/res/layout/fragment_tasks.xml" value="0.31302083333333336" />
+        <entry key="app/src/main/res/layout/item_checkpoint.xml" value="0.37318840579710144" />
+        <entry key="app/src/main/res/layout/item_search_history.xml" value="0.37228260869565216" />
         <entry key="app/src/main/res/layout/item_submits.xml" value="0.37092391304347827" />
         <entry key="app/src/main/res/layout/item_tasks.xml" value="0.3260416666666667" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.3302083333333333" />

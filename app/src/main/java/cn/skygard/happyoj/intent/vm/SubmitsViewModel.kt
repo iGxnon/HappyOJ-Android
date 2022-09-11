@@ -21,9 +21,6 @@ class SubmitsViewModel :
         Log.d("SubmitsViewModel", "received an action $action")
         when (action) {
             is SubmitsAction.OnSwipeRefresh -> fetchSubmits()
-            is SubmitsAction.ItemClicked -> {
-
-            }
         }
     }
 
@@ -37,8 +34,8 @@ class SubmitsViewModel :
                 SubmitsItem(
                     submitId = 10,
                     submitUid = 10,
+                    submitTitle = "实验一：114514",
                     submitAt = Calendar.getInstance().time,
-                    submitLabel = SubmitLabel.Accept,
                     checkPointLabels = listOf(SubmitLabel.Accept, SubmitLabel.Accept),
                     checkPointNum = 2,
                     submitScore = 100,
@@ -46,9 +43,32 @@ class SubmitsViewModel :
                 SubmitsItem(
                     submitId = 12,
                     submitUid = 12,
+                    submitTitle = "实验一：1919810",
                     submitAt = Calendar.getInstance().time,
-                    submitLabel = SubmitLabel.RuntimeError,
                     checkPointLabels = listOf(SubmitLabel.RuntimeError),
+                    checkPointNum = 1,
+                    submitScore = 0,
+                ),
+                SubmitsItem(
+                    submitId = 15,
+                    submitUid = 15,
+                    submitTitle = "实验一：1145141919810",
+                    submitAt = Calendar.getInstance().time,
+                    checkPointLabels = listOf(
+                        SubmitLabel.TimeLimitError,
+                        SubmitLabel.Accept, SubmitLabel.Accept,
+                        SubmitLabel.MemoryLimitError,
+                        SubmitLabel.Accept, SubmitLabel.Accept,
+                    ),
+                    checkPointNum = 6,
+                    submitScore = 80,
+                ),
+                SubmitsItem(
+                    submitId = 16,
+                    submitUid = 16,
+                    submitTitle = "实验一：一个一个一个",
+                    submitAt = Calendar.getInstance().time,
+                    checkPointLabels = listOf(SubmitLabel.WrongAnswer),
                     checkPointNum = 1,
                     submitScore = 0,
                 ),

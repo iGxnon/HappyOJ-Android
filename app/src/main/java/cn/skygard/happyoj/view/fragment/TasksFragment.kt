@@ -1,9 +1,13 @@
 package cn.skygard.happyoj.view.fragment
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import cn.skygard.common.base.ext.dp2px
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.mvi.BaseVmBindFragment
 import cn.skygard.common.mvi.ext.observeEvent

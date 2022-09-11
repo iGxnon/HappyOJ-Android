@@ -1,5 +1,6 @@
 package cn.skygard.happyoj.view.activity
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -9,9 +10,11 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.AccelerateInterpolator
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import cn.skygard.common.base.BaseApp
@@ -122,6 +125,15 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
         }
     }
 
+    private fun randomTint() : Int {
+        return listOf(
+            R.color.green_bg_tint,
+            R.color.pink_bg_tint,
+            R.color.purple_bg_tint,
+            R.color.yellow_bg_tint
+        )[random.nextInt(4)]
+    }
+
     private fun initView() {
         binding.apply {
             setSupportActionBar(toolbar)
@@ -135,13 +147,42 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                     .load(taskItem.imageUrl)
                     .into(ivBackground)
             }
-            val bgTint = listOf(
-                            R.color.green_bg_tint,
-                            R.color.pink_bg_tint,
-                            R.color.purple_bg_tint,
-                            R.color.yellow_bg_tint
-                        )[random.nextInt(4)]
-            ivBgTint.setImageResource(bgTint)
+            ivBgTint.setImageResource(randomTint())
+            randomTint().color.run {
+                fabFavor.colorNormal = this
+                fabFavor.colorPressed = this
+            }
+            randomTint().color.run {
+                fabMenu.menuButtonColorNormal = this
+                fabMenu.menuButtonColorPressed = this
+            }
+            randomTint().color.run {
+                fabRefresh.colorNormal = this
+                fabRefresh.colorPressed = this
+            }
+            randomTint().color.run {
+                fabTop.colorNormal = this
+                fabTop.colorPressed = this
+            }
+            fabRefresh.setOnClickListener {
+                viewModel.dispatch(LabAction.FetchContent(true))
+            }
+            nvContent.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener {
+                    _, _, scrollY, _, oldScrollY ->
+                if (scrollY > oldScrollY)
+                    fabMenu.hideMenuButton(true)
+                else if (scrollY < oldScrollY)
+                    fabMenu.showMenuButton(true)
+            })
+            fabTop.setOnClickListener {
+                ValueAnimator.ofInt(nvContent.scrollY, 0).run {
+                    interpolator = AccelerateInterpolator()
+                    addUpdateListener {
+                        nvContent.scrollY = it.animatedValue as Int
+                    }
+                    start()
+                }
+            }
         }
         viewModel.dispatch(LabAction.FetchContent())
     }
@@ -149,7 +190,6 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
-            R.id.lab_refresh -> viewModel.dispatch(LabAction.FetchContent(true))
             R.id.lab_feedback -> {
                 val dialogBinding = DialogFeedbackBinding.inflate(layoutInflater)
                 val dialog = MaterialAlertDialogBuilder(this)

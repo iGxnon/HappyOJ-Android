@@ -40,13 +40,13 @@ class SearchActivity : BaseBindActivity<ActivitySearchBinding>() {
         get() = ContextCompat.getColor(this, R.color.prime_color_variant)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-        setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         if (BaseApp.darkMode) {
             delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
         } else {
             delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
         }
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         super.onCreate(savedInstanceState)
         binding.searchBar.transitionName = intent.getStringExtra("transition_name")
         window.sharedElementEnterTransition = MaterialContainerTransform().apply {

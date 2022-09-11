@@ -8,6 +8,5 @@ data class SubmitsState(
 )
 
 sealed class SubmitsAction {
-    data class ItemClicked(val item: SubmitsItem) : SubmitsAction()
     object OnSwipeRefresh : SubmitsAction()
 }

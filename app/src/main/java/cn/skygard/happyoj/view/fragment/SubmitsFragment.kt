@@ -3,7 +3,6 @@ package cn.skygard.happyoj.view.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.mvi.BaseVmBindFragment
@@ -19,9 +18,7 @@ class SubmitsFragment : BaseVmBindFragment<SubmitsViewModel, FragmentSubmitsBind
 
     private val parentViewModel by activityViewModels<MainViewModel>()
     private val submitsRvAdapter by lazyUnlock {
-        SubmitsRvAdapter {
-            viewModel.dispatch(SubmitsAction.ItemClicked(this))
-        }
+        SubmitsRvAdapter ()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +30,7 @@ class SubmitsFragment : BaseVmBindFragment<SubmitsViewModel, FragmentSubmitsBind
     private fun initView() {
         viewModel.dispatch(SubmitsAction.OnSwipeRefresh)
         binding.rvSubmits.run {
-            layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = submitsRvAdapter
         }
         binding.srlSubmits.setOnRefreshListener {
