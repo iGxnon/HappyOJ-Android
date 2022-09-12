@@ -1,6 +1,7 @@
 package cn.skygard.happyoj.view.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,7 +14,7 @@ import cn.skygard.happyoj.repo.model.TasksItem
 import com.bumptech.glide.Glide
 import java.lang.String.format
 
-class TasksRvAdapter(private val onClick: TasksItem.() -> Unit) :
+class TasksRvAdapter(private val onClick: (TasksItem, View, String, View, String) -> Unit) :
     ListAdapter<TasksItem, TasksRvAdapter.Holder>(TasksItemCallback()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -30,7 +31,12 @@ class TasksRvAdapter(private val onClick: TasksItem.() -> Unit) :
                 if (layoutPosition == -1)
                     return@setOnClickListener
                 val item = getItem(layoutPosition)!!
-                item.onClick()
+                val transitionNameHeader = "header-$layoutPosition"
+                binding.ivShortcut.transitionName = transitionNameHeader
+                val transitionNameDesc = "desc-$layoutPosition"
+                binding.tvDesc.transitionName = transitionNameDesc
+                onClick(item, binding.ivShortcut, transitionNameHeader,
+                    binding.tvDesc, transitionNameDesc)
             }
         }
 

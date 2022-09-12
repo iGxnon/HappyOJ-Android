@@ -28,8 +28,8 @@ class CrashActivity : BaseActivity() {
                 exitProcess(0)
             }.run {
                 val dialog = create()
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(this@CrashActivity, R.color.prim_on_color))
+//                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+//                    .setTextColor(ContextCompat.getColor(this@CrashActivity, R.color.prim_on_color))
                 dialog
             }.show()
     }

@@ -2,8 +2,6 @@
 package cn.skygard.common.base.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.Color
 import android.os.Bundle
@@ -19,10 +17,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import cn.skygard.common.R
 import cn.skygard.common.base.BaseApp
-import cn.skygard.common.base.ext.color
-import java.io.Serializable
+import cn.skygard.common.base.ext.SP_DAY_NIGHT_MODE
+import cn.skygard.common.base.ext.SP_DAY_NIGHT_PREFERENCE
+import cn.skygard.common.base.ext.defaultSp
 
 /**
  * 绝对基础的抽象
@@ -64,26 +62,34 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
         mIsActivityRebuilt = savedInstanceState != null
         // 设置 localNightMode
         if (delegate.localNightMode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED) {
-            // 点开 APP
-            val sp = getSharedPreferences("settings", 0)
-            when (sp.getInt("darkMode", 0)) {
-                0 -> {
-                    Log.d("MainActivity", "here")
-                    if (applicationContext.resources.configuration.uiMode != 0x21) {
+            if (defaultSp.getBoolean(SP_DAY_NIGHT_PREFERENCE, true)) {
+                if (applicationContext.resources.configuration.uiMode != 0x21) {
+                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+                    BaseApp.darkMode = false
+                } else {
+                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+                    BaseApp.darkMode = true
+                }
+            } else {
+                when (defaultSp.getInt(SP_DAY_NIGHT_MODE, 0)) {
+                    0 -> { // flowing system 初次打开 APP
+                        Log.d("MainActivity", "here")
+                        if (applicationContext.resources.configuration.uiMode != 0x21) {
+                            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+                            BaseApp.darkMode = false
+                        } else {
+                            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+                            BaseApp.darkMode = true
+                        }
+                    }
+                    1 -> {  // 白天
                         delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
                         BaseApp.darkMode = false
-                    } else {
+                    }
+                    -1 -> {  // 黑夜
                         delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
                         BaseApp.darkMode = true
                     }
-                }
-                1 -> {  // 白天
-                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
-                    BaseApp.darkMode = false
-                }
-                -1 -> {  // 黑夜
-                    delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-                    BaseApp.darkMode = true
                 }
             }
         }
@@ -101,9 +107,10 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
     }
 
     fun switchDayNight() {
-        val editor = getSharedPreferences("settings", 0).edit()
-        editor.putInt("darkMode", if (BaseApp.darkMode) -1 else 1)
-        editor.apply()
+        defaultSp.edit().run {
+            putInt(SP_DAY_NIGHT_MODE, if (BaseApp.darkMode) -1 else 1)
+            apply()
+        }
     }
 
     private fun refreshStatusBar() {

@@ -1,15 +1,18 @@
 package cn.skygard.happyoj.view.activity
 
 import android.animation.ValueAnimator
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
+import android.transition.ChangeBounds
+import android.transition.ChangeClipBounds
+import android.transition.ChangeImageTransform
+import android.transition.TransitionSet
 import android.util.Log
-import android.util.Patterns
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
+import android.util.Pair
+import android.view.*
 import android.view.animation.AccelerateInterpolator
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,6 +38,8 @@ import cn.skygard.happyoj.repo.model.TasksItem
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.latex.JLatexMathPlugin
 import io.noties.markwon.html.HtmlPlugin
@@ -90,9 +95,22 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
         } else {
             delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
         }
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         super.onCreate(savedInstanceState)
+        initAnim()
         initView()
         initViewStates()
+    }
+
+    private fun initAnim() {
+        val transitionSet = TransitionSet()
+        transitionSet.addTransition(ChangeBounds())
+        transitionSet.addTransition(ChangeClipBounds())
+        transitionSet.addTransition(ChangeImageTransform())
+        window.sharedElementEnterTransition = transitionSet
+        window.sharedElementExitTransition = transitionSet
+        binding.tvDesc.transitionName = intent.getStringExtra(TransitionNameDesc)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -189,7 +207,7 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> finishAfterTransition()
             R.id.lab_feedback -> {
                 val dialogBinding = DialogFeedbackBinding.inflate(layoutInflater)
                 val dialog = MaterialAlertDialogBuilder(this)
@@ -223,16 +241,32 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
     companion object {
 
+        @Deprecated("废弃")
+        private const val TransitionNameHeader = "transition_name_header"
+        private const val TransitionNameDesc = "transition_name_desc"
+
         private val random = Random()
 
-        fun start(ctx: Context, task: TasksItem) {
-            ctx.startActivity(Intent(ctx, LabActivity::class.java)
+        fun start(ctx: Context, task: TasksItem,
+                  titleView: View, transitionNameHeader: String,
+                  descView: View, transitionNameDesc: String) {
+            val intent = Intent(ctx, LabActivity::class.java)
                 .putExtra("task_id", task.taskId)
                 .putExtra("task_title", task.title)
                 .putExtra("task_img", task.imageUrl)
                 .putExtra("task_content", task.mdUrl)
                 .putExtra("task_date", task.date)
-                .putExtra("task_shortcut", task.shortcut))
+                .putExtra("task_shortcut", task.shortcut)
+                .putExtra(TransitionNameHeader, transitionNameHeader)
+                .putExtra(TransitionNameDesc, transitionNameDesc)
+            if (ctx is Activity) {
+                ctx.startActivity(intent,
+                    ActivityOptions.makeSceneTransitionAnimation(ctx,
+                        Pair.create(titleView, transitionNameHeader),
+                        Pair.create(descView, transitionNameDesc)).toBundle())
+            } else {
+                ctx.startActivity(intent)
+            }
         }
     }
 

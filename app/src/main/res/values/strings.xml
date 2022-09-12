@@ -21,4 +21,5 @@
     <string name="load_fail">加载失败，点击重试</string>
     <string name="feedback_detail">反馈内容：</string>
     <string name="contact_email">联系邮箱：</string>
+    <string name="quit">退出登录</string>
 </resources>

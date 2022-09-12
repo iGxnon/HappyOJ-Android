@@ -7,6 +7,7 @@ import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.Pair
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AppCompatDelegate
@@ -24,6 +25,7 @@ import cn.skygard.happyoj.intent.state.MainSharedEvent
 import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.view.fragment.SubmitsFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 
@@ -47,7 +49,6 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         super.onCreate(savedInstanceState)
         val firstStart = intent.getBooleanExtra("firstStart", true)
         initView(firstStart)
-        initViewStates()
         initViewEvents()
     }
 
@@ -125,6 +126,11 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                 anim.duration = 600
                 anim.start()
             }
+            findViewById<ShapeableImageView>(R.id.sivProfileOpen).setOnClickListener {
+                it.transitionName = "profile-opener-header"
+                ProfileActivity.startWithAnim(this@MainActivity,
+                    Pair.create(it, "profile-opener-header"))
+            }
         }
 
         binding.run {
@@ -135,6 +141,9 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             }
             ivProfileOpen.setOnClickListener {
                 Log.d("MainActivity", "open profile")
+                binding.ivProfileOpen.transitionName = "profile-opener-header"
+                ProfileActivity.startWithAnim(this@MainActivity,
+                    Pair.create(binding.ivProfileOpen, "profile-opener-header"))
             }
             ivDrawerOpen.setOnClickListener {
                 drawer.openDrawer(binding.navView)
@@ -147,7 +156,8 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                     when (it.itemId) {
                         R.id.nav_account -> {
                             Log.d("MainActivity", "navigation to account")
-                            switchToolbar(true)
+                            ProfileActivity.start(this@MainActivity)
+                            return@setNavigationItemSelectedListener true
                         }
                         R.id.nav_tasks -> {
                             Log.d("MainActivity", "navigation to tasks")
@@ -169,10 +179,6 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                 }
             }
         }
-    }
-
-    private fun initViewStates() {
-
     }
 
     private fun initViewEvents() {

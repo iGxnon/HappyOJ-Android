@@ -19,8 +19,9 @@ class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>()
 
     private val parentViewModel by activityViewModels<MainViewModel>()
     private val tasksRvAdapter by lazyUnlock {
-        TasksRvAdapter {
-            LabActivity.start(requireContext(), this)
+        TasksRvAdapter { item, headerView, transitionNameHeader, descView, transitionNameDesc ->
+            LabActivity.start(requireContext(), item, headerView,
+                transitionNameHeader, descView, transitionNameDesc)
         }
     }
 
@@ -70,7 +71,6 @@ class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>()
     }
 
     companion object {
-        @JvmStatic
         fun newInstance(): TasksFragment {
             return TasksFragment()
         }

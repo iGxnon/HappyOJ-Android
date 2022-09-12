@@ -1,23 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="13dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:id="@+id/layout_history"
+        android:layout_width="0dp"
+        android:layout_marginEnd="10dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@id/iv_delete"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:src="@drawable/ic_history_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:lines="1"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="?colorOnPrimary"
+            tools:text="114514" />
+    </LinearLayout>
+
     <ImageView
-        android:src="@drawable/ic_history_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/iv_delete"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_clear_24"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tv_history"
-        android:layout_marginStart="10dp"
-        android:layout_gravity="center"
-        android:textColor="?colorOnPrimary"
-        tools:text="114514"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

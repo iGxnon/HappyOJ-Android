@@ -20,13 +20,18 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.invisible
 import cn.skygard.common.base.ext.visible
 import cn.skygard.common.base.ui.BaseBindActivity
 import cn.skygard.common.mvi.BaseVmBindActivity
+import cn.skygard.common.mvi.ext.observeEvent
 import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.databinding.ActivitySearchBinding
+import cn.skygard.happyoj.intent.state.SearchAction
+import cn.skygard.happyoj.intent.state.SearchEvent
+import cn.skygard.happyoj.intent.state.SearchState
 import cn.skygard.happyoj.intent.vm.SearchViewModel
 import cn.skygard.happyoj.view.fragment.SearchFragment
 import cn.skygard.happyoj.view.fragment.SearchHistoryFragment
@@ -52,6 +57,36 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
         super.onCreate(savedInstanceState)
         initAnim()
         initView()
+        initViewState()
+        initViewEvents()
+    }
+
+    private fun initViewState() {
+        viewModel.viewStates.run {
+            observeState(this@SearchActivity, SearchState::searchText) {
+                binding.etInput.text.replace(0, binding.etInput.text.length, it)
+            }
+        }
+    }
+
+    private fun initViewEvents() {
+        viewModel.viewEvents.observeEvent(this) {
+            when (it) {
+                is SearchEvent.ReplaceSearch -> {
+                    replaceFragment(R.id.frag_container) {
+                        SearchFragment.newInstance()
+                    }
+                }
+                is SearchEvent.ReplaceHistory -> {
+                    replaceFragment(R.id.frag_container) {
+                        SearchHistoryFragment.newInstance()
+                    }
+                }
+                is SearchEvent.StartSearch -> {
+                    viewModel.dispatch(SearchAction.SearchFor(binding.etInput.text.toString()))
+                }
+            }
+        }
     }
 
     private fun initAnim() {
@@ -95,7 +130,7 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
                         SearchFragment.newInstance()
                     }
                 } else if (it?.isNotEmpty() == true) {
-//                    viewModel.dispatch(SearchAction.StartQuickSearch)
+                    viewModel.dispatch(SearchAction.QuickSearchFor(it.toString()))
                 } else {
                     binding.ivCleaner.invisible()
                     replaceFragment(R.id.frag_container) {
@@ -109,9 +144,9 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
 
             etInput.setOnEditorActionListener { tv, actionId, _ ->
                 val keyword = tv.text
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && keyword.isNotEmpty()) {
                     Log.d("SearchActivity", "search for $keyword")
-//                    viewModel.dispatch(SearchAction.StartSearch)
+                    viewModel.dispatch(SearchAction.SearchFor(keyword.toString()))
                 }
                 false
             }
@@ -123,7 +158,7 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
                     (this as InputMethodManager).showSoftInput(binding.etInput,
                         InputMethodManager.SHOW_IMPLICIT)
                 }
-            }, 380)
+            }, 350)
         }
     }
 
