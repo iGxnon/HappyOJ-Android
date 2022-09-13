@@ -34,11 +34,10 @@ import cn.skygard.happyoj.intent.state.FetchState
 import cn.skygard.happyoj.intent.state.LabAction
 import cn.skygard.happyoj.intent.state.LabState
 import cn.skygard.happyoj.intent.vm.LabViewModel
-import cn.skygard.happyoj.repo.model.TasksItem
+import cn.skygard.happyoj.domain.model.TasksItem
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.latex.JLatexMathPlugin

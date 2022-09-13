@@ -1,6 +1,6 @@
 package cn.skygard.happyoj.intent.state
 
-import cn.skygard.happyoj.repo.model.SubmitsItem
+import cn.skygard.happyoj.domain.model.SubmitsItem
 
 data class SubmitsState(
     val fetchState: FetchState = FetchState.Fetched,

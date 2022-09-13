@@ -8,7 +8,7 @@ import cn.skygard.happyoj.intent.state.FetchState
 import cn.skygard.happyoj.intent.state.LabAction
 import cn.skygard.happyoj.intent.state.LabEvent
 import cn.skygard.happyoj.intent.state.LabState
-import cn.skygard.happyoj.repo.model.TasksItem
+import cn.skygard.happyoj.domain.model.TasksItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package cn.skygard.happyoj.repo.model
+package cn.skygard.happyoj.domain.model
 
 import java.util.*
 

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import cn.skygard.happyoj.databinding.ItemCheckpointBinding
-import cn.skygard.happyoj.repo.model.SubmitLabel
+import cn.skygard.happyoj.domain.model.SubmitLabel
 
 class CheckpointsRvAdapter :
     ListAdapter<SubmitLabel, CheckpointsRvAdapter.Holder>(CheckpointsCallback()) {

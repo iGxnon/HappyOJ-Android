@@ -10,7 +10,7 @@ import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.visible
 import cn.skygard.happyoj.databinding.ItemTasksBinding
-import cn.skygard.happyoj.repo.model.TasksItem
+import cn.skygard.happyoj.domain.model.TasksItem
 import com.bumptech.glide.Glide
 import java.lang.String.format
 

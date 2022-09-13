@@ -6,7 +6,7 @@ import cn.skygard.common.mvi.ext.setState
 import cn.skygard.common.mvi.ext.triggerEvent
 import cn.skygard.common.mvi.vm.BaseViewModel
 import cn.skygard.happyoj.intent.state.*
-import cn.skygard.happyoj.repo.model.TasksItem
+import cn.skygard.happyoj.domain.model.TasksItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*

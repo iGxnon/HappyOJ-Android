@@ -12,8 +12,8 @@ import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.base.ext.visible
 import cn.skygard.happyoj.databinding.ItemSubmitsBinding
-import cn.skygard.happyoj.repo.model.SubmitLabel
-import cn.skygard.happyoj.repo.model.SubmitsItem
+import cn.skygard.happyoj.domain.model.SubmitLabel
+import cn.skygard.happyoj.domain.model.SubmitsItem
 import java.text.SimpleDateFormat
 import java.util.*
 

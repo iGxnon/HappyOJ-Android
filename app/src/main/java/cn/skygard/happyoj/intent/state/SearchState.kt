@@ -1,6 +1,6 @@
 package cn.skygard.happyoj.intent.state
 
-import cn.skygard.happyoj.repo.model.TasksItem
+import cn.skygard.happyoj.domain.model.TasksItem
 
 data class SearchState(
     // for SearchFragment

@@ -8,8 +8,8 @@ import cn.skygard.happyoj.intent.state.FetchState
 import cn.skygard.happyoj.intent.state.MainSharedEvent
 import cn.skygard.happyoj.intent.state.SubmitsAction
 import cn.skygard.happyoj.intent.state.SubmitsState
-import cn.skygard.happyoj.repo.model.SubmitLabel
-import cn.skygard.happyoj.repo.model.SubmitsItem
+import cn.skygard.happyoj.domain.model.SubmitLabel
+import cn.skygard.happyoj.domain.model.SubmitsItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
