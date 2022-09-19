@@ -2,24 +2,12 @@ package cn.skygard.happyoj.repo.remote.model
 import com.google.gson.annotations.SerializedName
 
 data class User(
-    @SerializedName("aud")
-    val aud: String,
-    @SerializedName("exp")
-    val exp: Int,
-    @SerializedName("iat")
-    val iat: Int,
-    @SerializedName("iss")
-    val iss: String,
-    @SerializedName("nbf")
-    val nbf: Int,
-    @SerializedName("sub")
-    val sub: String,
-    @SerializedName("type")
-    val type: String,
-    @SerializedName("user_details")
-    val userDetails: UserDetails
+    @SerializedName("user_subject")
+    val subject: UserSubject
 ) {
-    data class UserDetails(
+    data class UserSubject(
+        @SerializedName("id")
+        val uid: Long,
         @SerializedName("birthdate")
         val birthdate: String,
         @SerializedName("create_time")
@@ -34,8 +22,6 @@ data class User(
         val gender: Int,
         @SerializedName("given_name")
         val givenName: String,
-        @SerializedName("id")
-        val id: Long,
         @SerializedName("name")
         val name: String,
         @SerializedName("nickname")
@@ -53,5 +39,27 @@ data class User(
         @SerializedName("username")
         val username: String
     )
+
+    data class UserToken(
+        @SerializedName("oauth2_token")
+        val token: UserTokenWrapper
+    ) {
+        data class UserTokenWrapper(
+            @SerializedName("access_token")
+            val accessToken: Token,
+            @SerializedName("refresh_token")
+            val refreshToken: Token,
+            @SerializedName("id_token")
+            val idToken: Token
+        )
+        data class Token(
+            @SerializedName("token_type")
+            val type: String,
+            @SerializedName("token_value")
+            val value: String,
+            @SerializedName("expires_at")
+            val expiresAt: Long
+        )
+    }
 }
 
