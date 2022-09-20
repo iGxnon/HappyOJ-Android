@@ -8,7 +8,7 @@ object RetrofitHelper {
 
     private const val BASE_URL = "https://oj.gocybee.team/api/"
 
-    val userService by lazy { retrofit.create(UserService::class.java) }
+    val userService: UserService by lazy { retrofit.create(UserService::class.java) }
 
     private val retrofit by lazy {
         initRetrofit()

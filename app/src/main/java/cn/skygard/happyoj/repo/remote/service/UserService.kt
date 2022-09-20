@@ -2,32 +2,24 @@ package cn.skygard.happyoj.repo.remote.service
 
 import cn.skygard.happyoj.repo.remote.model.Result
 import cn.skygard.happyoj.repo.remote.model.User
+import okhttp3.RequestBody
 import retrofit2.http.*
 import java.io.File
 
 interface UserService {
 
     @POST("user/register")
+    @FormUrlEncoded
     suspend fun register(
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("email") email: String
     ): Result<Any>
 
-    @GET("user/register/confirm")
-    suspend fun registerConfirm(
-        @Query("code") code: String
-    ): Result<Any>
-
     @POST("user/password")
+    @FormUrlEncoded
     suspend fun resetPassword(
         @Field("email") email: String
-    ): Result<Any>
-
-    @GET("user/password/confirm")
-    suspend fun resetPasswordConfirm(
-        @Query("code") code: String,
-        @Query("password") password: String
     ): Result<Any>
 
     @GET("user/{uid}")
@@ -41,14 +33,16 @@ interface UserService {
     ): Result<Any>
 
     @POST("user/login/password")
+    @FormUrlEncoded
     suspend fun login(
         @Field("username") username: String,
         @Field("password") password: String
     ): Result<User.UserToken>
 
     @POST("user/avatar")
+    @Multipart
     suspend fun setAvatar(
-        @Field("file") imgFile: File
+        @Part("file") imgFile: RequestBody
     ): Result<Any>
 
     @GET("user/bind/github")

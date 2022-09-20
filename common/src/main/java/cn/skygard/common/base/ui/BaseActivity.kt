@@ -50,6 +50,10 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
     protected open val statusBarColor: Int
         get() = ContextCompat.getColor(this, androidx.appcompat.R.color.primary_material_dark)
 
+    protected open val navigationBarColor: Int
+        get() = ContextCompat.getColor(this, androidx.appcompat.R.color.primary_material_dark)
+
+
     /**
      * 是否处于转屏或异常重建后的 Activity 状态
      */
@@ -104,6 +108,7 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
             // 刷新状态栏
             refreshStatusBar()
         }
+        refreshNavigationBar()
     }
 
     fun switchDayNight() {
@@ -115,6 +120,10 @@ abstract class BaseActivity : AppCompatActivity(), BaseUI {
 
     private fun refreshStatusBar() {
         window.statusBarColor = statusBarColor
+    }
+
+    private fun refreshNavigationBar() {
+        window.navigationBarColor = navigationBarColor
     }
 
     private fun cancelStatusBar() {

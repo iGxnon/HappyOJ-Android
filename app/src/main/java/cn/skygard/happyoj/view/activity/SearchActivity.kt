@@ -46,6 +46,9 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
     override val statusBarColor: Int
         get() = ContextCompat.getColor(this, R.color.prime_color_variant)
 
+    override val navigationBarColor: Int
+        get() = ContextCompat.getColor(this, R.color.prime_color_variant)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if (BaseApp.darkMode) {
             delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
@@ -90,13 +93,13 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
     }
 
     private fun initAnim() {
-        binding.searchBar.transitionName = intent.getStringExtra("transition_name")
+        binding.root.transitionName = intent.getStringExtra("transition_name")
         window.sharedElementEnterTransition = MaterialContainerTransform().apply {
-            addTarget(binding.searchBar)
+            addTarget(binding.root)
             duration = 300L
         }
         window.sharedElementExitTransition = MaterialContainerTransform().apply {
-            addTarget(binding.searchBar)
+            addTarget(binding.root)
             duration = 300L
         }
     }

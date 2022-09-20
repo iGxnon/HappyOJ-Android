@@ -153,7 +153,9 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             } else {
                 profileName.text = "未登录"
                 email.text = "未登录"
-                // TODO launch LoginActivity
+                sivProfile.setOnClickListener {
+                    LoginActivity.start(this@MainActivity)
+                }
             }
         }
 
@@ -180,7 +182,9 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                         Pair.create(binding.ivProfileOpen, "profile-opener-header"))
                 }
             } else {
-                // TODO launch LoginActivity
+                ivProfileOpen.setOnClickListener {
+                    LoginActivity.start(this@MainActivity)
+                }
             }
 
             ivDrawerOpen.setOnClickListener {
