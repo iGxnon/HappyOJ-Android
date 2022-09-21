@@ -9,12 +9,12 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="250dp"
             app:titleEnabled="true"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
             app:contentScrim="?colorPrimary"
@@ -73,68 +73,26 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:background="?colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:visibility="visible"
             android:layout_width="match_parent"
+            android:background="?colorPrimary"
+            app:tabTextColor="?colorOnPrimary"
+            app:tabSelectedTextColor="?colorOnPrimary"
+            app:tabIndicatorColor="?colorOnPrimary"
+            android:paddingTop="0dp"
             app:tabMode="fixed"
-            android:layout_height="48dp" />
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:layout_marginTop="48dp"
-            android:id="@+id/vp2"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/tv_load_fail"-->
-<!--            android:visibility="gone"-->
-<!--            android:layout_marginTop="100dp"-->
-<!--            android:layout_gravity="center|top"-->
-<!--            android:text="@string/load_fail"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content" />-->
+    </com.google.android.material.appbar.AppBarLayout>
 
-<!--        <ProgressBar-->
-<!--            android:id="@+id/pb_content"-->
-<!--            android:indeterminateTint="?colorOnPrimary"-->
-<!--            android:visibility="visible"-->
-<!--            android:layout_marginTop="100dp"-->
-<!--            android:layout_gravity="center|top"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content" />-->
-
-<!--        <androidx.core.widget.NestedScrollView-->
-<!--            android:id="@+id/nv_content"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_behavior="@string/appbar_scrolling_view_behavior" >-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_content"-->
-<!--                android:textColor="?colorOnPrimary"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="16dp"-->
-<!--                android:lineSpacingExtra="2dp"-->
-<!--                android:textSize="16sp"-->
-<!--                tools:text="看见你必须打你脸" />-->
-
-<!--        </androidx.core.widget.NestedScrollView>-->
-
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
+    <androidx.viewpager2.widget.ViewPager2
+        android:background="?colorPrimary"
+        android:id="@+id/vp2"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fab_menu"
@@ -164,6 +122,16 @@
             app:fab_colorPressed="@color/pink_bg_tint"
             app:rippleColor="@color/white"
             android:src="@drawable/ic_arrow_up_24"
+            app:fab_size="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_repo"
+            app:fab_colorNormal="@color/pink_bg_tint"
+            app:fab_colorPressed="@color/pink_bg_tint"
+            app:rippleColor="@color/white"
+            android:src="@drawable/ic_repopush"
             app:fab_size="mini"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

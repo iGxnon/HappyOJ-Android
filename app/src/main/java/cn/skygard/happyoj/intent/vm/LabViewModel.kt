@@ -3,36 +3,66 @@ package cn.skygard.happyoj.intent.vm
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import cn.skygard.common.mvi.ext.setState
+import cn.skygard.common.mvi.ext.triggerEvent
 import cn.skygard.common.mvi.vm.BaseViewModel
+import cn.skygard.happyoj.domain.model.TasksItem
 import cn.skygard.happyoj.intent.state.FetchState
 import cn.skygard.happyoj.intent.state.LabAction
 import cn.skygard.happyoj.intent.state.LabEvent
 import cn.skygard.happyoj.intent.state.LabState
-import cn.skygard.happyoj.domain.model.TasksItem
+import cn.skygard.happyoj.repo.database.AppDatabase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LabViewModel(val taskItem: TasksItem) :
-    BaseViewModel<LabState, LabAction, LabEvent>(LabState()) {
+class LabViewModel(private val taskItem: TasksItem)
+    : BaseViewModel<LabState, LabAction, LabEvent>(LabState()) {
 
     override fun dispatch(action: LabAction) {
         Log.d("LabViewModel", "received an action $action")
         when (action) {
+            is LabAction.HideMenu -> mViewStates.setState {
+                copy(menuVisibility = false)
+            }
+            is LabAction.ShowMenu -> mViewStates.setState {
+                copy(menuVisibility = true)
+            }
+            is LabAction.ChangePage -> mViewStates.setState {
+                copy(currentPage = action.page)
+            }
+            is LabAction.ScrollToTop -> mViewEvents.triggerEvent(LabEvent.ScrollToTop)
             is LabAction.FetchContent -> fetchContent(action.noCache)
         }
     }
 
+    private var fetchContentJob: Job? = null
     private fun fetchContent(noCache: Boolean) {
-        Log.d("LabViewModel", "fetching data from ${taskItem.mdUrl}")
+        Log.d("LabViewModel", "fetching data from ${taskItem.taskId}, noCache: $noCache")
         mViewStates.setState {
-            copy(fetchState = FetchState.Fetching)
+            copy(contentFetchState = FetchState.Fetching)
         }
-        viewModelScope.launch {
-            delay(1000)
-            mViewStates.setState {
-                copy(
-                    fetchState = FetchState.Fetched,
-                    mdContent = """
+        fetchContentJob?.cancel()
+        fetchContentJob = viewModelScope.launch {
+            if (noCache) {
+                if (!fetchContentOnline()) {
+                    mViewStates.setState {
+                        copy(contentFetchState = FetchState.NotFetched)
+                    }
+                }
+            } else {
+                if (!fetchContentOffline()) {
+                    fetchContent(true)
+                }
+            }
+        }
+    }
+
+    private suspend fun fetchContentOnline(): Boolean {
+        delay(500)
+        mViewStates.setState {
+            copy(
+                contentFetchState = FetchState.Fetched,
+                mdContent = """
                         # 前言
                         
                         > 如果你是iPhone，请打开你的淘宝，京东，亚马逊，~~拼多多~~ 等购物软件，输入Android手机，然后选择一款即可 
@@ -603,9 +633,20 @@ class LabViewModel(val taskItem: TasksItem) :
                         + 主要还是介绍一下 `Termux` 这款终端模拟器，以及 Hexo 博客的搭建和部署的两种方式
                         + 如果你跟着教程搭建好了博客，记得评论一下啊 : )
                     """.trimIndent()
-                )
-            }
+            )
         }
+        return true
+    }
+
+    private suspend fun fetchContentOffline(): Boolean {
+        val content = AppDatabase.INSTANCE.taskDao().getContent(taskItem.taskId)?:return false
+        mViewStates.setState {
+            copy(
+                contentFetchState = FetchState.Fetched,
+                mdContent = content
+            )
+        }
+        return true
     }
 
 }

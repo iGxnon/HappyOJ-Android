@@ -5,8 +5,6 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.transition.ChangeBounds
 import android.transition.ChangeClipBounds
@@ -15,73 +13,54 @@ import android.transition.TransitionSet
 import android.util.Log
 import android.util.Pair
 import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
-import androidx.annotation.RequiresApi
+import android.view.animation.LinearInterpolator
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
+import androidx.lifecycle.lifecycleScope
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.adapter.BaseVPAdapter
 import cn.skygard.common.base.ext.color
-import cn.skygard.common.base.ext.gone
+import cn.skygard.common.base.ext.dp2px
 import cn.skygard.common.base.ext.lazyUnlock
-import cn.skygard.common.base.ext.visible
 import cn.skygard.common.mvi.BaseVmBindActivity
 import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityLabBinding
 import cn.skygard.happyoj.databinding.DialogFeedbackBinding
-import cn.skygard.happyoj.intent.state.FetchState
+import cn.skygard.happyoj.databinding.DialogRepoSubmitBinding
+import cn.skygard.happyoj.domain.model.TasksItem
 import cn.skygard.happyoj.intent.state.LabAction
 import cn.skygard.happyoj.intent.state.LabState
+import cn.skygard.happyoj.intent.state.Pages
 import cn.skygard.happyoj.intent.vm.LabViewModel
-import cn.skygard.happyoj.domain.model.TasksItem
-import cn.skygard.happyoj.view.fragment.SearchFragment
-import cn.skygard.happyoj.view.fragment.SubmitsFragment
-import cn.skygard.happyoj.view.fragment.TasksFragment
+import cn.skygard.happyoj.view.fragment.LabCommitFragment
+import cn.skygard.happyoj.view.fragment.LabDetailFragment
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
-import io.noties.markwon.Markwon
-import io.noties.markwon.ext.latex.JLatexMathPlugin
-import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.image.glide.GlideImagesPlugin
-import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
-import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.regex.Pattern
-
 
 class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
     override val isCancelStatusBar: Boolean
         get() = true
 
-    private val markdon by lazyUnlock {
-        Markwon.builder(this) // automatically create Glide instance
-            .usePlugin(MarkwonInlineParserPlugin.create())
-            .usePlugin(GlideImagesPlugin.create(Glide.with(this))) // use supplied Glide instance
-            .usePlugin(HtmlPlugin.create())
-            .build()
-    }
-
-
     private val taskItem by lazyUnlock {
         TasksItem(
             taskId = intent.getIntExtra("task_id", -1),
             title = intent.getStringExtra("task_title")!!,
             imageUrl = intent.getStringExtra("task_img")!!,
-            mdUrl = intent.getStringExtra("task_content")!!,
             date = intent.getSerializableExtra("task_date")!! as Date,
-            shortcut = intent.getStringExtra("task_shortcut")!!
+            summary = intent.getStringExtra("task_summary")!!
         )
     }
 
@@ -107,7 +86,52 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
         super.onCreate(savedInstanceState)
         initAnim()
         initView()
-        initViewStates()
+        initViewState()
+    }
+
+    private fun initViewState() {
+        viewModel.viewStates.run {
+            observeState(this@LabActivity, LabState::currentPage) {
+                binding.vp2.currentItem = it.index
+            }
+            observeState(this@LabActivity, LabState::menuVisibility) {
+                if (it) {
+                    Log.d("LabActivity", "open menu")
+                    binding.run {
+                        fabMenu.showMenu(true)
+                        ValueAnimator.ofInt(30.dp2px(), 0).run {
+                            interpolator = AccelerateDecelerateInterpolator()
+                            addUpdateListener { v ->
+                                tabLayout.setPadding(
+                                    tabLayout.paddingLeft,
+                                    v.animatedValue as Int,
+                                    tabLayout.paddingRight,
+                                    tabLayout.paddingBottom
+                                )
+                            }
+                            start()
+                        }
+                    }
+                } else {
+                    Log.d("LabActivity", "close menu")
+                    binding.run {
+                        fabMenu.hideMenu(true)
+                        ValueAnimator.ofInt(0, 30.dp2px()).run {
+                            interpolator = AccelerateDecelerateInterpolator()
+                            addUpdateListener { v ->
+                                tabLayout.setPadding(
+                                    tabLayout.paddingLeft,
+                                    v.animatedValue as Int,
+                                    tabLayout.paddingRight,
+                                    tabLayout.paddingBottom
+                                )
+                            }
+                            start()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initAnim() {
@@ -123,31 +147,6 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.lab_menu, menu)
         return super.onCreateOptionsMenu(menu)
-    }
-
-    private fun initViewStates() {
-//        viewModel.viewStates.run {
-//            observeState(this@LabActivity, LabState::mdContent) {
-//                markdon.setMarkdown(binding.tvContent, it)
-//            }
-//            observeState(this@LabActivity, LabState::fetchState) {
-//                when (it) {
-//                    FetchState.Fetching -> {
-//                        binding.tvContent.gone()
-//                        binding.pbContent.visible()
-//                    }
-//                    FetchState.Fetched -> {
-//                        binding.pbContent.gone()
-//                        binding.tvContent.visible()
-//                    }
-//                    FetchState.NotFetched -> {
-//                        binding.pbContent.gone()
-//                        binding.tvContent.visible()
-//                        binding.tvLoadFail.visible()
-//                    }
-//                }
-//            }
-//        }
     }
 
     private fun randomTint() : Int {
@@ -170,65 +169,80 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
             vp2.adapter = BaseVPAdapter(
                 supportFragmentManager,
                 lifecycle,
-                listOf("LAB", "COMMIT"),
+                Pages.all(),
             ) { _, i ->
                 return@BaseVPAdapter when(i) {
-                    0 -> SubmitsFragment.newInstance()
-                    1 -> TasksFragment.newInstance()
+                    Pages.LAB.index -> LabDetailFragment.newInstance()
+                    Pages.COMMIT.index -> LabCommitFragment.newInstance()
                     else -> Fragment()
                 }
             }
 
             TabLayoutMediator(tabLayout, vp2, true, true) { tab, pos ->
                 tab.text = when (pos) {
-                    0 -> "LAB"
-                    1 -> "COMMIT"
+                    Pages.LAB.index -> Pages.LAB.title
+                    Pages.COMMIT.index -> Pages.COMMIT.title
                     else -> ""
                 }
                 Log.d("LabActivity", "$pos")
             }.attach()
 
-
-            tvDesc.text = taskItem.shortcut
+            tvDesc.text = taskItem.summary
             if (taskItem.imageUrl != "") {
                 Glide.with(this@LabActivity)
                     .load(taskItem.imageUrl)
                     .into(ivBackground)
             }
-            ivBgTint.setImageResource(randomTint())
+            randomTint().run {
+                ivBgTint.setImageResource(this)
+                tabLayout.setSelectedTabIndicatorColor(this.color)
+            }
+
             randomTint().color.run {
                 fabFavor.colorNormal = this
                 fabFavor.colorPressed = this
             }
             randomTint().color.run {
-                fabMenu.menuButtonColorNormal = this
-                fabMenu.menuButtonColorPressed = this
-            }
-            randomTint().color.run {
                 fabTop.colorNormal = this
                 fabTop.colorPressed = this
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                vp2.setOnScrollChangeListener {
-                        _, _, scrollY, _, oldScrollY ->
-                    if (scrollY > oldScrollY)
-                        fabMenu.hideMenuButton(true)
-                    else if (scrollY < oldScrollY)
-                        fabMenu.showMenuButton(true)
-                }
+            randomTint().color.run {
+                fabRepo.colorNormal = this
+                fabRepo.colorPressed = this
             }
-            fabTop.setOnClickListener {
-                ValueAnimator.ofInt(vp2.scrollY, 0).run {
-                    interpolator = AccelerateInterpolator()
-                    addUpdateListener {
-                        vp2.scrollY = it.animatedValue as Int
-                    }
-                    start()
-                }
+            randomTint().color.run {
+                fabMenu.menuButtonColorNormal = this
+                fabMenu.menuButtonColorPressed = this
             }
 
+            fabTop.setOnClickListener {
+                Log.d("LabActivity", "scroll to top.")
+                viewModel.dispatch(LabAction.ScrollToTop)
+            }
+            fabRepo.setOnClickListener {
+                showSubmitRepoUrl()
+            }
         }
-        viewModel.dispatch(LabAction.FetchContent())
+    }
+
+    private fun showSubmitRepoUrl() {
+        val dialogBinding = DialogRepoSubmitBinding.inflate(layoutInflater)
+        // TODO 自适应 提交/修改
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle("提交/修改仓库")
+            .setView(dialogBinding.root)
+            .setPositiveButton("提交") { _, _ ->
+                val email = dialogBinding.etRepoUrl.text
+                val feedback = dialogBinding.etRepoUrl.text
+                Log.d("LabActivity", "Email: $email")
+                Log.d("LabActivity", "Feedback: $feedback")
+                Snackbar.make(binding.root, "提交成功", Snackbar.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("取消"){_, _ -> }.create()
+        dialog.show()
+        val onColor = ContextCompat.getColor(this, R.color.prim_on_color)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(onColor)
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(onColor)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -271,7 +285,7 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
         private const val TransitionNameHeader = "transition_name_header"
         private const val TransitionNameDesc = "transition_name_desc"
 
-        private val random = Random()
+        val random = Random()
 
         fun start(ctx: Context, task: TasksItem,
                   titleView: View, transitionNameHeader: String,
@@ -280,9 +294,8 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 .putExtra("task_id", task.taskId)
                 .putExtra("task_title", task.title)
                 .putExtra("task_img", task.imageUrl)
-                .putExtra("task_content", task.mdUrl)
                 .putExtra("task_date", task.date)
-                .putExtra("task_shortcut", task.shortcut)
+                .putExtra("task_summary", task.summary)
                 .putExtra(TransitionNameHeader, transitionNameHeader)
                 .putExtra(TransitionNameDesc, transitionNameDesc)
             if (ctx is Activity) {

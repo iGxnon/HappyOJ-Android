@@ -24,7 +24,6 @@ class TasksViewModel :
         }
     }
 
-
     private fun fetchTasks() {
         mViewStates.setState {
             copy(fetchState = FetchState.Fetching)
@@ -36,17 +35,15 @@ class TasksViewModel :
                 TasksItem(
                     taskId = 1,
                     title = "实验一：基础语法",
-                    shortcut = "学习 Golang 的基础语法，杀马特团长，你就领那俩狗徒弟，就像那舒克和贝塔，见到你必须给你头套薅掉",
+                    summary = "学习 Golang 的基础语法，杀马特团长，你就领那俩狗徒弟，就像那舒克和贝塔，见到你必须给你头套薅掉",
                     date = Calendar.getInstance().time,
-                    mdUrl = ""
                 ),
                 TasksItem(
                     taskId = 2,
                     title = "实验二：接口",
-                    shortcut = "使用 Golang 的接口，我徒弟呢？杀马特团长，你给我等着，你给我等着！！！",
+                    summary = "使用 Golang 的接口，我徒弟呢？杀马特团长，你给我等着，你给我等着！！！",
                     imageUrl = "https://img.skygard.cn/dahuoji.jpeg",
                     date = Calendar.getInstance().time,
-                    mdUrl = ""
                 )
             )
             mViewStates.setState {

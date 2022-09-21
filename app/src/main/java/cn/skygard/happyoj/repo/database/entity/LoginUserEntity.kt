@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 // 登录的账户列表
-@Entity(tableName = "t_login_user")
+@Entity(tableName = "t_login_users")
 data class LoginUserEntity(
     @PrimaryKey
     val uid: Int,  // 来自后端

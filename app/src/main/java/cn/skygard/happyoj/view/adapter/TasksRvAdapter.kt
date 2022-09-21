@@ -43,7 +43,7 @@ class TasksRvAdapter(private val onClick: (TasksItem, View, String, View, String
         fun bind(item: TasksItem) {
             binding.run {
                 tvTitle.text = item.title
-                tvDesc.text = item.shortcut
+                tvDesc.text = item.summary
                 tvDate.text = format("%tF", item.date)
                 if (item.imageUrl != "") {
                     ivShortcut.visible()

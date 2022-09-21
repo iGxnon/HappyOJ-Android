@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ui.BaseBindActivity
 import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityLoginBinding
@@ -25,6 +27,11 @@ class LoginActivity : BaseBindActivity<ActivityLoginBinding>() {
         get() = ContextCompat.getColor(this, R.color.prime_color)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (BaseApp.darkMode) {
+            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+        }
         super.onCreate(savedInstanceState)
         initView()
     }
