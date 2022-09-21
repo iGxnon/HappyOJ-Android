@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.util.Log
+import android.util.Pair
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +20,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.allViews
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.invisible
 import cn.skygard.common.base.ext.visible
-import cn.skygard.common.base.ui.BaseBindActivity
 import cn.skygard.common.mvi.BaseVmBindActivity
 import cn.skygard.common.mvi.ext.observeEvent
 import cn.skygard.common.mvi.ext.observeState
@@ -93,7 +91,7 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
     }
 
     private fun initAnim() {
-        binding.root.transitionName = intent.getStringExtra("transition_name")
+        binding.root.transitionName = intent.getStringExtra(SearchbarTransitionName)
         window.sharedElementEnterTransition = MaterialContainerTransform().apply {
             addTarget(binding.root)
             duration = 300L
@@ -108,23 +106,15 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
         replaceFragment(R.id.frag_container) {
             SearchHistoryFragment.newInstance()
         }
+        actionBar?.hide()
+        supportActionBar?.hide()
         binding.run {
-            setSupportActionBar(searchBar)
-            supportActionBar?.run {
-                setDisplayHomeAsUpEnabled(true)
-                setHomeAsUpIndicator(R.drawable.ic_anim_menu_2_back)
-                title = ""
+            if (ivBack.drawable is Animatable) {
+                (ivBack.drawable as Animatable).start()
             }
-            // 启动所有可以启动的动画
-            // 找不到 toolbar 上面的那个返回键（
-            searchBar.allViews.forEach {
-                if (it is ImageView) {
-                    if (it.drawable is Animatable) {
-                        (it.drawable as Animatable).start()
-                    }
-                }
+            ivBack.setOnClickListener {
+                finishAfterTransition()
             }
-
             // 清除键动态显示
             etInput.addTextChangedListener {
                 if (it?.isNotEmpty() == true && binding.ivCleaner.visibility > View.VISIBLE) {
@@ -173,9 +163,11 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
     }
 
     companion object {
+        const val SearchbarTransitionName = "transition_search_bar"
+
         fun start(ctx: Context, viewGroup: ViewGroup, transitionName: String) {
             val intent = Intent(ctx, SearchActivity::class.java).apply {
-                putExtra("transition_name", transitionName)
+                putExtra(SearchbarTransitionName, transitionName)
             }
             if (ctx is Activity) {
                 ctx.startActivity(intent,

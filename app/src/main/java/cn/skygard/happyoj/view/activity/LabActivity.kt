@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.transition.ChangeBounds
 import android.transition.ChangeClipBounds
@@ -14,13 +16,17 @@ import android.util.Log
 import android.util.Pair
 import android.view.*
 import android.view.animation.AccelerateInterpolator
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import cn.skygard.common.base.BaseApp
+import cn.skygard.common.base.adapter.BaseVPAdapter
 import cn.skygard.common.base.ext.color
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.lazyUnlock
@@ -35,9 +41,14 @@ import cn.skygard.happyoj.intent.state.LabAction
 import cn.skygard.happyoj.intent.state.LabState
 import cn.skygard.happyoj.intent.vm.LabViewModel
 import cn.skygard.happyoj.domain.model.TasksItem
+import cn.skygard.happyoj.view.fragment.SearchFragment
+import cn.skygard.happyoj.view.fragment.SubmitsFragment
+import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.latex.JLatexMathPlugin
@@ -59,9 +70,6 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
             .usePlugin(MarkwonInlineParserPlugin.create())
             .usePlugin(GlideImagesPlugin.create(Glide.with(this))) // use supplied Glide instance
             .usePlugin(HtmlPlugin.create())
-            .usePlugin(JLatexMathPlugin.create(binding.tvContent.textSize) {
-                it.inlinesEnabled(true)
-            })
             .build()
     }
 
@@ -118,28 +126,28 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
     }
 
     private fun initViewStates() {
-        viewModel.viewStates.run {
-            observeState(this@LabActivity, LabState::mdContent) {
-                markdon.setMarkdown(binding.tvContent, it)
-            }
-            observeState(this@LabActivity, LabState::fetchState) {
-                when (it) {
-                    FetchState.Fetching -> {
-                        binding.tvContent.gone()
-                        binding.pbContent.visible()
-                    }
-                    FetchState.Fetched -> {
-                        binding.pbContent.gone()
-                        binding.tvContent.visible()
-                    }
-                    FetchState.NotFetched -> {
-                        binding.pbContent.gone()
-                        binding.tvContent.visible()
-                        binding.tvLoadFail.visible()
-                    }
-                }
-            }
-        }
+//        viewModel.viewStates.run {
+//            observeState(this@LabActivity, LabState::mdContent) {
+//                markdon.setMarkdown(binding.tvContent, it)
+//            }
+//            observeState(this@LabActivity, LabState::fetchState) {
+//                when (it) {
+//                    FetchState.Fetching -> {
+//                        binding.tvContent.gone()
+//                        binding.pbContent.visible()
+//                    }
+//                    FetchState.Fetched -> {
+//                        binding.pbContent.gone()
+//                        binding.tvContent.visible()
+//                    }
+//                    FetchState.NotFetched -> {
+//                        binding.pbContent.gone()
+//                        binding.tvContent.visible()
+//                        binding.tvLoadFail.visible()
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun randomTint() : Int {
@@ -158,6 +166,29 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 setDisplayHomeAsUpEnabled(true)
                 title = taskItem.title
             }
+
+            vp2.adapter = BaseVPAdapter(
+                supportFragmentManager,
+                lifecycle,
+                listOf("LAB", "COMMIT"),
+            ) { _, i ->
+                return@BaseVPAdapter when(i) {
+                    0 -> SubmitsFragment.newInstance()
+                    1 -> TasksFragment.newInstance()
+                    else -> Fragment()
+                }
+            }
+
+            TabLayoutMediator(tabLayout, vp2, true, true) { tab, pos ->
+                tab.text = when (pos) {
+                    0 -> "LAB"
+                    1 -> "COMMIT"
+                    else -> ""
+                }
+                Log.d("LabActivity", "$pos")
+            }.attach()
+
+
             tvDesc.text = taskItem.shortcut
             if (taskItem.imageUrl != "") {
                 Glide.with(this@LabActivity)
@@ -174,32 +205,28 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 fabMenu.menuButtonColorPressed = this
             }
             randomTint().color.run {
-                fabRefresh.colorNormal = this
-                fabRefresh.colorPressed = this
-            }
-            randomTint().color.run {
                 fabTop.colorNormal = this
                 fabTop.colorPressed = this
             }
-            fabRefresh.setOnClickListener {
-                viewModel.dispatch(LabAction.FetchContent(true))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                vp2.setOnScrollChangeListener {
+                        _, _, scrollY, _, oldScrollY ->
+                    if (scrollY > oldScrollY)
+                        fabMenu.hideMenuButton(true)
+                    else if (scrollY < oldScrollY)
+                        fabMenu.showMenuButton(true)
+                }
             }
-            nvContent.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener {
-                    _, _, scrollY, _, oldScrollY ->
-                if (scrollY > oldScrollY)
-                    fabMenu.hideMenuButton(true)
-                else if (scrollY < oldScrollY)
-                    fabMenu.showMenuButton(true)
-            })
             fabTop.setOnClickListener {
-                ValueAnimator.ofInt(nvContent.scrollY, 0).run {
+                ValueAnimator.ofInt(vp2.scrollY, 0).run {
                     interpolator = AccelerateInterpolator()
                     addUpdateListener {
-                        nvContent.scrollY = it.animatedValue as Int
+                        vp2.scrollY = it.animatedValue as Int
                     }
                     start()
                 }
             }
+
         }
         viewModel.dispatch(LabAction.FetchContent())
     }

@@ -1,73 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorPrimaryVariant"
     tools:context=".view.activity.SearchActivity">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="parent"
+<!--    <androidx.coordinatorlayout.widget.CoordinatorLayout-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <com.google.android.material.appbar.AppBarLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize">-->
+
+<!--            <androidx.appcompat.widget.Toolbar-->
+<!--                android:id="@+id/search_bar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="?attr/actionBarSize"-->
+<!--                android:background="?colorPrimaryVariant"-->
+<!--                app:titleTextColor="?colorOnPrimary">-->
+
+<!--                <LinearLayout-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_height="match_parent">-->
+
+<!--                    <EditText-->
+<!--                        android:id="@+id/et_input"-->
+<!--                        android:imeOptions="actionSearch"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:maxLines="1"-->
+<!--                        android:singleLine="true"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_weight="6"-->
+<!--                        android:background="@null"-->
+<!--                        android:layout_marginEnd="10dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:hint="搜索实验"-->
+<!--                        android:textColorHint="?colorOnPrimary"-->
+<!--                        tools:ignore="Autofill,HardcodedText,TextFields" />-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/iv_cleaner"-->
+<!--                        android:background="?android:attr/selectableItemBackgroundBorderless"-->
+<!--                        android:visibility="invisible"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@drawable/ic_clear_24"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        tools:ignore="ContentDescription" />-->
+<!--                </LinearLayout>-->
+
+
+<!--            </androidx.appcompat.widget.Toolbar>-->
+
+<!--        </com.google.android.material.appbar.AppBarLayout>-->
+
+<!--    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/search_bar"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="15dp"
+        android:backgroundTint="?colorPrimaryVariant"
+        android:background="?colorPrimaryVariant"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_back"
+            android:src="@drawable/ic_anim_menu_2_back"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/search_bar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?colorPrimaryVariant"
-                app:titleTextColor="?colorOnPrimary">
+        <EditText
+            android:paddingHorizontal="20dp"
+            android:id="@+id/et_input"
+            android:imeOptions="actionSearch"
+            android:layout_gravity="center"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:background="@null"
+            android:layout_height="wrap_content"
+            android:hint="搜索实验"
+            android:textColorHint="?colorOnPrimary"
+            tools:ignore="Autofill,HardcodedText,TextFields" />
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_marginEnd="10dp"
-                    android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/iv_cleaner"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_clear_24"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            tools:ignore="ContentDescription" />
 
-                    <EditText
-                        android:id="@+id/et_input"
-                        android:imeOptions="actionSearch"
-                        android:layout_gravity="center"
-                        android:maxLines="1"
-                        android:singleLine="true"
-                        android:layout_width="0dp"
-                        android:layout_weight="6"
-                        android:background="@null"
-                        android:layout_marginEnd="10dp"
-                        android:layout_height="wrap_content"
-                        android:hint="搜索实验"
-                        android:textColorHint="?colorOnPrimary"
-                        tools:ignore="Autofill,HardcodedText,TextFields" />
-
-                    <ImageView
-                        android:id="@+id/iv_cleaner"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:visibility="invisible"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_clear_24"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        tools:ignore="ContentDescription" />
-                </LinearLayout>
-
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.fragment.app.FragmentContainerView
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
         android:id="@+id/frag_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
