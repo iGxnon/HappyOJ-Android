@@ -5,7 +5,6 @@ name: default
 steps:
   - name: build-debug
     image: cimg/android:2021.08.1
-    privileged: true
     commands:
       - ./gradlew clean assembleDebug
     when:
