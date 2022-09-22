@@ -6,11 +6,6 @@ steps:
   - name: build-debug
     image: cimg/android:2021.08.1
     user: 0
-    volumes:
-      - name: gradle
-        path: /root/.gradle
-      - name: maven
-        path: /root/.m2
     commands:
       - ./gradlew clean assembleDebug
     when:
@@ -21,11 +16,3 @@ steps:
         - push
         - pull_request
         - tag
-
-volumes:
-  - name: gradle
-    host:
-      path: $HOME/.gradle
-  - name: maven
-    host:
-      path: $HOME/.m2
