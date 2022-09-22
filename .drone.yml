@@ -30,11 +30,8 @@ steps:
       base_url: https://gitea.skygard.cn
       files: app/build/outputs/apk/debug/*
     when:
-      branch:
-        - master
       event:
         - tag
-        - push
 
 volumes:
   - name: gradle
