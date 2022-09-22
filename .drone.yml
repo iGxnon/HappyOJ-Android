@@ -36,7 +36,7 @@ steps:
 volumes:
   - name: gradle
     host:
-      path: $HOME/.gradle
+      path: /root/.gradle
   - name: maven
     host:
-      path: $HOME/.m2
+      path: /root/.m2
