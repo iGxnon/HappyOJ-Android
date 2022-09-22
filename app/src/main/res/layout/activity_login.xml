@@ -19,7 +19,7 @@
         android:id="@+id/tv_login"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:text="登入"
+        android:text="登录"
         android:layout_marginTop="100dp"
         android:layout_marginStart="15dp"
         android:textSize="30sp"
@@ -27,85 +27,10 @@
         android:layout_height="wrap_content"
         tools:ignore="HardcodedText" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/frag_container"
         app:layout_constraintTop_toBottomOf="@id/tv_login"
-        app:color="?colorPrimaryVariant"
-        android:id="@+id/til_username"
-        app:boxBackgroundColor="?colorPrimaryVariant"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        app:hintTextColor="?colorOnPrimary"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:textColorHint="?colorOnPrimary">
-
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:importantForAutofill="no"
-            android:hint="用户名/邮箱"
-            android:textColorHint="?colorOnPrimary"
-            android:inputType="textEmailAddress"
-            tools:ignore="HardcodedText,LabelFor" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        app:layout_constraintTop_toBottomOf="@id/til_username"
-        android:id="@+id/til_pwd"
-        app:boxBackgroundColor="?colorPrimaryVariant"
-        app:hintTextColor="?colorOnPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="15dp"
-        app:counterOverflowTextColor="@color/red"
-        app:counterEnabled="true"
-        app:counterMaxLength="30"
-        app:counterTextColor="?colorOnPrimary"
-        android:paddingRight="15dp"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:textColorHint="?colorOnPrimary">
-
-        <EditText
-            android:id="@+id/et_pwd"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:importantForAutofill="no"
-            android:hint="密码"
-            android:textColorHint="?colorOnPrimary"
-            android:inputType="textPassword"
-            tools:ignore="HardcodedText,LabelFor" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <Button
-        android:backgroundTint="?colorPrimaryVariant"
-        android:textStyle="bold"
-        android:textColor="?colorOnPrimary"
-        android:text="登录"
-        android:id="@+id/btn_login"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="20dp"
-        app:layout_constraintTop_toBottomOf="@id/til_pwd"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        tools:ignore="HardcodedText" />
-
-    <Button
-        android:backgroundTint="?colorPrimaryVariant"
-        android:textStyle="bold"
-        android:textColor="?colorOnPrimary"
-        android:text="注册"
-        android:id="@+id/btn_register"
-        android:layout_marginTop="10dp"
-        android:layout_marginHorizontal="20dp"
-        app:layout_constraintTop_toBottomOf="@id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        tools:ignore="HardcodedText" />
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
