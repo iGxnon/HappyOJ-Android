@@ -11,7 +11,7 @@ pipeline {
       }
       steps {
         sh './gradlew clean assembleDebug'
-        archiveArtifacts(artifacts: '**/*.apk', allowEmptyArchive: true)
+        archiveArtifacts(artifacts: 'app/build/outputs/apk/debug/*.apk', allowEmptyArchive: true)
       }
     }
 
