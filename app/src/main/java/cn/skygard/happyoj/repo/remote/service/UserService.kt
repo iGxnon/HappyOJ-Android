@@ -34,7 +34,6 @@ interface UserService {
     ): Result<Login>
 
     @GET("user/profile")
-    @FormUrlEncoded
     suspend fun getInfo(): Result<User>
 
 

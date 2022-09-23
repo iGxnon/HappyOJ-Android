@@ -26,6 +26,7 @@ import cn.skygard.happyoj.intent.state.MainSharedEvent
 import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.domain.logic.UserManager
 import cn.skygard.happyoj.domain.model.User
+import cn.skygard.happyoj.intent.state.MainAction
 import cn.skygard.happyoj.view.fragment.SubmitsFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.bumptech.glide.Glide
@@ -54,6 +55,11 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         val firstStart = intent.getBooleanExtra("firstStart", true)
         initView(firstStart)
         initViewEvents()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initView(false)
     }
 
     /**
@@ -134,6 +140,7 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             val profileName = findViewById<TextView>(R.id.profileName)
             val email = findViewById<TextView>(R.id.email)
             if (UserManager.checkLogin()) {
+                viewModel.dispatch(MainAction.RefreshData)
                 sivProfile.setOnClickListener {
                     it.transitionName = "profile-opener-header"
                     ProfileActivity.startWithAnim(this@MainActivity,
@@ -164,6 +171,7 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                 SearchActivity.start(this@MainActivity, binding.searchBar, "search")
             }
             if (UserManager.checkLogin()) {
+                viewModel.dispatch(MainAction.RefreshData)
                 ivProfileOpen.setOnClickListener {
                     Log.d("MainActivity", "open profile")
                     binding.ivProfileOpen.transitionName = "profile-opener-header"

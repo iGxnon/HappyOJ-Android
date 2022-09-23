@@ -13,8 +13,13 @@ object UserManager {
 
     suspend fun login(username: String, pwd: String): LoginEvent {
         try {
-            if (RetrofitHelper.userService.login(username, pwd).ok)
+            if (RetrofitHelper.userService.login(username, pwd).ok) {
+                while (!checkLogin()) {
+                    defaultSp.edit().putBoolean("is_login", true).apply()
+                }
+                Log.d("UserManager", "${checkLogin()}")
                 return LoginEvent.LoginSuccess
+            }
         } catch (e: Exception) {
             if (e is HttpException) {
                 Log.d("UserManager", e.response()?.errorBody()?.string()?:"")
@@ -54,6 +59,8 @@ object UserManager {
         return LoginEvent.RegisterFailed
     }
 
+    fun logout() = defaultSp.edit().putBoolean("is_login", false).apply()
+
     fun checkLogin() = defaultSp.getBoolean("is_login", false)
 
     fun refreshToken(accessToken: String?, refreshToken: String?, idToken: String?) {
@@ -74,6 +81,7 @@ object UserManager {
 
     fun getAuthCookie(): String {
         val user = User.fromSp()
+        Log.d("UserManager", "get an auth token")
         return "x-token=${user.accessToken}; refresh-token=${user.refreshToken}; id-token=${user.idToken}"
     }
 }

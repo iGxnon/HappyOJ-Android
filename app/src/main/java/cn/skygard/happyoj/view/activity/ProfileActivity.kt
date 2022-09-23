@@ -11,6 +11,7 @@ import android.transition.ChangeImageTransform
 import android.transition.TransitionSet
 import android.util.Log
 import android.util.Pair
+import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.RadioButton
@@ -25,6 +26,7 @@ import cn.skygard.common.base.ui.BaseBindActivity
 import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityProfileBinding
 import cn.skygard.happyoj.databinding.DialogSettingDayNightBinding
+import cn.skygard.happyoj.domain.logic.UserManager
 import cn.skygard.happyoj.domain.model.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.dialog.MaterialDialogs
@@ -67,6 +69,16 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
             binding.tvDayNightMode.text = "跟随系统"
         } else {
             binding.tvDayNightMode.text = "手动调节"
+        }
+        binding.toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.profile_quit -> {
+                    Log.d("ProfileActivity", "logout")
+                    UserManager.logout()
+                    finishAfterTransition()
+                }
+            }
+            true
         }
         binding.settingDayNight.setOnClickListener {
             val dialogBinding = DialogSettingDayNightBinding.inflate(layoutInflater)

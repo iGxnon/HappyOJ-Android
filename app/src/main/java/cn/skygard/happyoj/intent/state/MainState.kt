@@ -14,4 +14,5 @@ sealed class MainSharedEvent {
 
 sealed class MainAction {
     data class TriggerSharedEvent(val event: MainSharedEvent) : MainAction()
+    object RefreshData: MainAction()
 }
