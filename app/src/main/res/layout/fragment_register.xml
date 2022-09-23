@@ -6,44 +6,17 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"
         app:color="?colorPrimaryVariant"
-        android:id="@+id/til_username"
-        app:boxBackgroundColor="?colorPrimaryVariant"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        app:hintTextColor="?colorOnPrimary"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:textColorHint="?colorOnPrimary">
-
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:importantForAutofill="no"
-            android:hint="用户名"
-            android:textColorHint="?colorOnPrimary"
-            android:inputType="text"
-            tools:ignore="HardcodedText,LabelFor" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        app:layout_constraintTop_toBottomOf="@id/til_username"
         android:id="@+id/til_email"
         app:boxBackgroundColor="?colorPrimaryVariant"
-        app:hintTextColor="?colorOnPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:paddingLeft="15dp"
-        app:counterTextColor="?colorOnPrimary"
         android:paddingRight="15dp"
+        app:hintTextColor="?colorOnPrimary"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:textColorHint="?colorOnPrimary">
 
@@ -60,9 +33,11 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+
     <com.google.android.material.textfield.TextInputLayout
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/til_email"
-        android:id="@+id/til_invite_code"
+        android:id="@+id/til_username"
         app:boxBackgroundColor="?colorPrimaryVariant"
         app:hintTextColor="?colorOnPrimary"
         android:layout_width="match_parent"
@@ -75,11 +50,11 @@
         android:textColorHint="?colorOnPrimary">
 
         <EditText
-            android:id="@+id/et_invite_code"
+            android:id="@+id/et_username"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:importantForAutofill="no"
-            android:hint="邀请码"
+            android:hint="用户名"
             android:textColorHint="?colorOnPrimary"
             android:inputType="text"
             tools:ignore="HardcodedText,LabelFor" />
@@ -87,9 +62,93 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/til_username"
+        android:id="@+id/til_code"
+        app:boxBackgroundColor="?colorPrimaryVariant"
+        app:hintTextColor="?colorOnPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="15dp"
+        app:counterTextColor="?colorOnPrimary"
+        android:paddingRight="15dp"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:textColorHint="?colorOnPrimary">
+
+        <EditText
+            android:id="@+id/et_code"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:importantForAutofill="no"
+            android:hint="验证码"
+            android:textColorHint="?colorOnPrimary"
+            android:inputType="text"
+            tools:ignore="HardcodedText,LabelFor" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <com.google.android.material.textfield.TextInputLayout
-        app:layout_constraintTop_toBottomOf="@id/til_invite_code"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/til_code"
+        android:id="@+id/til_stu_id"
+        app:boxBackgroundColor="?colorPrimaryVariant"
+        app:hintTextColor="?colorOnPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="15dp"
+        app:counterTextColor="?colorOnPrimary"
+        android:paddingRight="15dp"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:textColorHint="?colorOnPrimary">
+
+        <EditText
+            android:id="@+id/et_stu_id"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:importantForAutofill="no"
+            android:hint="学号"
+            android:textColorHint="?colorOnPrimary"
+            android:inputType="text"
+            tools:ignore="HardcodedText,LabelFor" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/til_stu_id"
+        android:id="@+id/til_name"
+        app:boxBackgroundColor="?colorPrimaryVariant"
+        app:hintTextColor="?colorOnPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="15dp"
+        app:counterTextColor="?colorOnPrimary"
+        android:paddingRight="15dp"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:textColorHint="?colorOnPrimary">
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:importantForAutofill="no"
+            android:hint="姓名"
+            android:textColorHint="?colorOnPrimary"
+            android:inputType="text"
+            tools:ignore="HardcodedText,LabelFor" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/til_name"
         android:id="@+id/til_pwd"
         app:boxBackgroundColor="?colorPrimaryVariant"
         app:hintTextColor="?colorOnPrimary"
@@ -99,7 +158,7 @@
         android:paddingLeft="15dp"
         app:counterOverflowTextColor="@color/red"
         app:counterEnabled="true"
-        app:counterMaxLength="30"
+        app:counterMaxLength="32"
         app:counterTextColor="?colorOnPrimary"
         android:paddingRight="15dp"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
@@ -118,6 +177,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/til_pwd"
         android:backgroundTint="?colorPrimaryVariant"
         android:textStyle="bold"
@@ -129,5 +189,30 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         tools:ignore="HardcodedText" />
+
+    <Button
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/til_email"
+        android:backgroundTint="?colorPrimaryVariant"
+        android:textStyle="bold"
+        android:textColor="?colorOnPrimary"
+        android:text="发送验证码"
+        android:id="@+id/btn_send_code"
+        android:layout_marginTop="30dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_resend"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/resend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

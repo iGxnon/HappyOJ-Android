@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a439877214cadbc3c0b77af32e364cdb",
+    "identityHash": "5f4aa428c5b2df2f01be13187ffdfd77",
     "entities": [
       {
         "tableName": "t_login_users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `username` TEXT NOT NULL, `avatar_url` TEXT NOT NULL, `id_token` TEXT NOT NULL, `access_token` TEXT NOT NULL, `refresh_token` TEXT NOT NULL, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `username` TEXT NOT NULL, `avatar_url` TEXT NOT NULL, `email` TEXT NOT NULL, `id_token` TEXT NOT NULL, `access_token` TEXT NOT NULL, `refresh_token` TEXT NOT NULL, PRIMARY KEY(`uid`))",
         "fields": [
           {
             "fieldPath": "uid",
@@ -23,6 +23,12 @@
           {
             "fieldPath": "avatarUrl",
             "columnName": "avatar_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -125,7 +131,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a439877214cadbc3c0b77af32e364cdb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5f4aa428c5b2df2f01be13187ffdfd77')"
     ]
   }
 }

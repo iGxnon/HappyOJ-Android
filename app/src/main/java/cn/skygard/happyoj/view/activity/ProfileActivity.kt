@@ -20,10 +20,12 @@ import androidx.lifecycle.lifecycleScope
 import cn.skygard.common.base.ext.SP_DAY_NIGHT_MODE
 import cn.skygard.common.base.ext.SP_DAY_NIGHT_PREFERENCE
 import cn.skygard.common.base.ext.defaultSp
+import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.base.ui.BaseBindActivity
 import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityProfileBinding
 import cn.skygard.happyoj.databinding.DialogSettingDayNightBinding
+import cn.skygard.happyoj.domain.model.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.dialog.MaterialDialogs
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
@@ -35,6 +37,10 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
 
     override val isCancelStatusBar: Boolean
         get() = true
+
+    private val user by lazyUnlock {
+        User.fromSp()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initAnim()

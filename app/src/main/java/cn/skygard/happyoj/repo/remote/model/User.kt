@@ -3,15 +3,13 @@ import com.google.gson.annotations.SerializedName
 
 data class User(
     @SerializedName("user_subject")
-    val subject: UserSubject
+    val userSubject: UserSubject
 ) {
     data class UserSubject(
-        @SerializedName("id")
-        val uid: Long,
         @SerializedName("birthdate")
         val birthdate: String,
-        @SerializedName("create_time")
-        val createTime: String,
+        @SerializedName("creat_time")
+        val creatTime: String,
         @SerializedName("email")
         val email: String,
         @SerializedName("email_verified")
@@ -20,12 +18,20 @@ data class User(
         val familyName: String,
         @SerializedName("gender")
         val gender: Int,
+        @SerializedName("github_name")
+        val githubName: String,
         @SerializedName("given_name")
         val givenName: String,
+        @SerializedName("id")
+        val id: Long,
+        @SerializedName("last_ip")
+        val lastIp: String,
         @SerializedName("name")
         val name: String,
         @SerializedName("nickname")
         val nickname: String,
+        @SerializedName("password")
+        val password: String,
         @SerializedName("phone_number")
         val phoneNumber: String,
         @SerializedName("phone_number_verified")
@@ -34,32 +40,59 @@ data class User(
         val picture: String,
         @SerializedName("scope")
         val scope: String,
+        @SerializedName("state")
+        val state: Int,
+        @SerializedName("stu_id")
+        val stuId: Int,
         @SerializedName("update_time")
         val updateTime: String,
         @SerializedName("username")
         val username: String
     )
+}
 
-    data class UserToken(
-        @SerializedName("oauth2_token")
-        val token: UserTokenWrapper
+
+data class Login(
+    @SerializedName("oauth2_token")
+    val oauth2Token: Oauth2Token
+) {
+    data class Oauth2Token(
+        @SerializedName("access_token")
+        val accessToken: AccessToken,
+        @SerializedName("id_token")
+        val idToken: IdToken,
+        @SerializedName("refresh_token")
+        val refreshToken: RefreshToken
     ) {
-        data class UserTokenWrapper(
-            @SerializedName("access_token")
-            val accessToken: Token,
-            @SerializedName("refresh_token")
-            val refreshToken: Token,
-            @SerializedName("id_token")
-            val idToken: Token
-        )
-        data class Token(
-            @SerializedName("token_type")
-            val type: String,
-            @SerializedName("token_value")
-            val value: String,
+
+        data class AccessToken(
             @SerializedName("expires_at")
-            val expiresAt: Long
+            val expiresAt: Int,
+            @SerializedName("token_type")
+            val tokenType: String,
+            @SerializedName("token_value")
+            val tokenValue: String
+        )
+
+        data class IdToken(
+            @SerializedName("expires_at")
+            val expiresAt: Int,
+            @SerializedName("token_type")
+            val tokenType: String,
+            @SerializedName("token_value")
+            val tokenValue: String
+        )
+
+        data class RefreshToken(
+            @SerializedName("expires_at")
+            val expiresAt: Int,
+            @SerializedName("token_type")
+            val tokenType: String,
+            @SerializedName("token_value")
+            val tokenValue: String
         )
     }
 }
+
+
 

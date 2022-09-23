@@ -3,7 +3,6 @@ package cn.skygard.happyoj.view.activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -25,13 +24,14 @@ import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityMainBinding
 import cn.skygard.happyoj.intent.state.MainSharedEvent
 import cn.skygard.happyoj.intent.vm.MainViewModel
+import cn.skygard.happyoj.domain.logic.UserManager
+import cn.skygard.happyoj.domain.model.User
 import cn.skygard.happyoj.view.fragment.SubmitsFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
-import org.w3c.dom.Text
 
 class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
 
@@ -131,31 +131,29 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                 anim.start()
             }
             val sivProfile = findViewById<ShapeableImageView>(R.id.sivProfileOpen)
-            if (defaultSp.getString("avatar_url", "") != "") {
-                Glide.with(this@MainActivity)
-                    .load(defaultSp.getString("avatar_url", ""))
-                    .into(sivProfile)
-            } else {
-                Glide.with(this@MainActivity)
-                    .load(R.drawable.default_avatar)
-                    .into(sivProfile)
-            }
             val profileName = findViewById<TextView>(R.id.profileName)
             val email = findViewById<TextView>(R.id.email)
-            if (defaultSp.getBoolean("is_login", false)) {
+            if (UserManager.checkLogin()) {
                 sivProfile.setOnClickListener {
                     it.transitionName = "profile-opener-header"
                     ProfileActivity.startWithAnim(this@MainActivity,
                         Pair.create(it, "profile-opener-header"))
                 }
-                profileName.text = defaultSp.getString("profileName", "")
-                email.text = defaultSp.getString("email", "")
+                val user = User.fromSp()
+                profileName.text = user.name
+                email.text = user.email
+                Glide.with(this@MainActivity)
+                    .load(user.avatarUrl)
+                    .into(sivProfile)
             } else {
                 profileName.text = "未登录"
                 email.text = "未登录"
                 sivProfile.setOnClickListener {
                     LoginActivity.start(this@MainActivity)
                 }
+                Glide.with(this@MainActivity)
+                    .load(R.drawable.default_avatar)
+                    .into(sivProfile)
             }
         }
 
@@ -165,26 +163,24 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                 binding.searchBar.transitionName = "search"
                 SearchActivity.start(this@MainActivity, binding.searchBar, "search")
             }
-            if (defaultSp.getString("avatar_url", "") != "") {
-                Glide.with(this@MainActivity)
-                    .load(defaultSp.getString("avatar_url", ""))
-                    .into(ivProfileOpen)
-            } else {
-                Glide.with(this@MainActivity)
-                    .load(R.drawable.default_avatar)
-                    .into(ivProfileOpen)
-            }
-            if (defaultSp.getBoolean("is_login", false)) {
+            if (UserManager.checkLogin()) {
                 ivProfileOpen.setOnClickListener {
                     Log.d("MainActivity", "open profile")
                     binding.ivProfileOpen.transitionName = "profile-opener-header"
                     ProfileActivity.startWithAnim(this@MainActivity,
                         Pair.create(binding.ivProfileOpen, "profile-opener-header"))
                 }
+                val user = User.fromSp()
+                Glide.with(this@MainActivity)
+                    .load(user.avatarUrl)
+                    .into(ivProfileOpen)
             } else {
                 ivProfileOpen.setOnClickListener {
                     LoginActivity.start(this@MainActivity)
                 }
+                Glide.with(this@MainActivity)
+                    .load(R.drawable.default_avatar)
+                    .into(ivProfileOpen)
             }
 
             ivDrawerOpen.setOnClickListener {
@@ -194,7 +190,6 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             navView.apply {
                 setCheckedItem(R.id.nav_tasks)
                 setNavigationItemSelectedListener {
-                    // start new activity/fragment here
                     when (it.itemId) {
                         R.id.nav_tasks -> {
                             Log.d("MainActivity", "navigation to tasks")

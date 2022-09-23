@@ -2,15 +2,21 @@ package cn.skygard.happyoj.intent.state
 
 data class LoginState(
     val isLoginPage: Boolean = true,
-    val registerPwdError: String = ""
 )
 
 sealed class LoginAction {
     data class ChangePage(val isLoginPage: Boolean) : LoginAction()
-    data class ShowRegisterPwdError(val err: String) : LoginAction()
+    data class Register(val username: String, val email: String, val stuId: String,
+                        val code: String, val pwd: String, val name: String) : LoginAction()
+    data class SendCode(val email: String) : LoginAction()
+    data class Login(val username: String, val pwd: String) : LoginAction()
 }
 
 sealed class LoginEvent {
-    object LoginFaild : LoginEvent()
-    object LoginSuccess: LoginEvent()
+    object LoginFailed : LoginEvent()
+    object LoginSuccess : LoginEvent()
+    object RegisterSuccess: LoginEvent()
+    object RegisterFailed: LoginEvent()
+    object MailSuccess: LoginEvent()
+    object MailFailed: LoginEvent()
 }

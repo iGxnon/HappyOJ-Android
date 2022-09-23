@@ -95,39 +95,36 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 binding.vp2.currentItem = it.index
             }
             observeState(this@LabActivity, LabState::menuVisibility) {
+                val fromDp: Int
+                val toDp: Int
+                val show: Boolean
                 if (it) {
                     Log.d("LabActivity", "open menu")
-                    binding.run {
-                        fabMenu.showMenu(true)
-                        ValueAnimator.ofInt(30.dp2px(), 0).run {
-                            interpolator = AccelerateDecelerateInterpolator()
-                            addUpdateListener { v ->
-                                tabLayout.setPadding(
-                                    tabLayout.paddingLeft,
-                                    v.animatedValue as Int,
-                                    tabLayout.paddingRight,
-                                    tabLayout.paddingBottom
-                                )
-                            }
-                            start()
-                        }
-                    }
+                    fromDp = 30.dp2px()
+                    toDp = 0
+                    show = true
                 } else {
                     Log.d("LabActivity", "close menu")
-                    binding.run {
+                    fromDp = 0
+                    toDp = 30.dp2px()
+                    show = false
+                }
+                binding.run {
+                    if (show)
+                        fabMenu.showMenu(true)
+                    else
                         fabMenu.hideMenu(true)
-                        ValueAnimator.ofInt(0, 30.dp2px()).run {
-                            interpolator = AccelerateDecelerateInterpolator()
-                            addUpdateListener { v ->
-                                tabLayout.setPadding(
-                                    tabLayout.paddingLeft,
-                                    v.animatedValue as Int,
-                                    tabLayout.paddingRight,
-                                    tabLayout.paddingBottom
-                                )
-                            }
-                            start()
+                    ValueAnimator.ofInt(fromDp, toDp).run {
+                        interpolator = AccelerateDecelerateInterpolator()
+                        addUpdateListener { v ->
+                            tabLayout.setPadding(
+                                tabLayout.paddingLeft,
+                                v.animatedValue as Int,
+                                tabLayout.paddingRight,
+                                tabLayout.paddingBottom
+                            )
                         }
+                        start()
                     }
                 }
             }
@@ -225,6 +222,35 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
         }
     }
 
+    private fun showFeedback() {
+        val dialogBinding = DialogFeedbackBinding.inflate(layoutInflater)
+        val dialog = MaterialAlertDialogBuilder(this)
+            .setTitle("反馈")
+            .setView(dialogBinding.root)
+            .setPositiveButton("提交") { _, _ ->
+                val email = dialogBinding.etEmail.text
+                val feedback = dialogBinding.etFeedback.text
+                if (!Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$")
+                        .matcher(email).matches()) {
+                    toast("邮箱格式不正确！")
+                    return@setPositiveButton
+                }
+                if (feedback.length > 150) {
+                    toast("反馈过长！")
+                    return@setPositiveButton
+                }
+                Log.d("LabActivity", "Email: $email")
+                Log.d("LabActivity", "Feedback: $feedback")
+                // TODO 提交
+                Snackbar.make(binding.root, "提交成功", Snackbar.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("取消"){_, _ -> }.create()
+        dialog.show()
+        val onColor = ContextCompat.getColor(this, R.color.prim_on_color)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(onColor)
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(onColor)
+    }
+
     private fun showSubmitRepoUrl() {
         val dialogBinding = DialogRepoSubmitBinding.inflate(layoutInflater)
         // TODO 自适应 提交/修改
@@ -248,33 +274,7 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finishAfterTransition()
-            R.id.lab_feedback -> {
-                val dialogBinding = DialogFeedbackBinding.inflate(layoutInflater)
-                val dialog = MaterialAlertDialogBuilder(this)
-                    .setTitle("反馈")
-                    .setView(dialogBinding.root)
-                    .setPositiveButton("提交") { _, _ ->
-                        val email = dialogBinding.etEmail.text
-                        val feedback = dialogBinding.etFeedback.text
-                        if (!Pattern.compile("^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$")
-                            .matcher(email).matches()) {
-                            toast("邮箱格式不正确！")
-                            return@setPositiveButton
-                        }
-                        if (feedback.length > 150) {
-                            toast("反馈过长！")
-                            return@setPositiveButton
-                        }
-                        Log.d("LabActivity", "Email: $email")
-                        Log.d("LabActivity", "Feedback: $feedback")
-                        Snackbar.make(binding.root, "提交成功", Snackbar.LENGTH_SHORT).show()
-                    }
-                    .setNegativeButton("取消"){_, _ -> }.create()
-                dialog.show()
-                val onColor = ContextCompat.getColor(this, R.color.prim_on_color)
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(onColor)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(onColor)
-            }
+            R.id.lab_feedback -> showFeedback()
         }
         return super.onOptionsItemSelected(item)
     }

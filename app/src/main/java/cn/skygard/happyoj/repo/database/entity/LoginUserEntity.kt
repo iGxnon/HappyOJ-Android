@@ -13,6 +13,8 @@ data class LoginUserEntity(
     val name: String,
     @ColumnInfo(name = "avatar_url")
     val avatarUrl: String,
+    @ColumnInfo(name = "email")
+    val email: String,
     @ColumnInfo(name = "id_token")
     val idToken: String,
     @ColumnInfo(name = "access_token")

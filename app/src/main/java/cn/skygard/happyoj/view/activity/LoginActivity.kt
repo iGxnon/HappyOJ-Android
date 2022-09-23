@@ -8,18 +8,26 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ui.BaseBindActivity
+import cn.skygard.common.mvi.BaseVmBindActivity
+import cn.skygard.common.mvi.ext.observeEvent
+import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityLoginBinding
+import cn.skygard.happyoj.intent.state.LoginEvent
+import cn.skygard.happyoj.intent.state.LoginState
+import cn.skygard.happyoj.intent.vm.LoginViewModel
 import cn.skygard.happyoj.repo.remote.RetrofitHelper
 import cn.skygard.happyoj.view.fragment.LoginFragment
+import cn.skygard.happyoj.view.fragment.RegisterFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 
-class LoginActivity : BaseBindActivity<ActivityLoginBinding>() {
+class LoginActivity : BaseVmBindActivity<LoginViewModel, ActivityLoginBinding>() {
 
     override val isCancelStatusBar: Boolean
         get() = false
@@ -35,6 +43,8 @@ class LoginActivity : BaseBindActivity<ActivityLoginBinding>() {
         }
         super.onCreate(savedInstanceState)
         initView()
+        initViewStates()
+        initViewEvents()
     }
 
     private fun initView() {
@@ -46,13 +56,50 @@ class LoginActivity : BaseBindActivity<ActivityLoginBinding>() {
         replaceFragment(R.id.frag_container) {
             LoginFragment.newInstance()
         }
-//        binding.btnLogin.setOnClickListener(LoginCallback())
-//        binding.btnRegister.setOnClickListener(RegisterCallback())
+    }
+
+    private fun initViewEvents() {
+        viewModel.viewEvents.run {
+            observeEvent(this@LoginActivity) {
+                val toastStr = when (it) {
+                    is LoginEvent.LoginFailed -> "登录失败"
+                    is LoginEvent.LoginSuccess -> {
+                        finishAfterTransition()
+                        "登录成功"
+                    }
+                    is LoginEvent.RegisterFailed -> "注册失败"
+                    is LoginEvent.RegisterSuccess -> "注册成功"
+                    is LoginEvent.MailSuccess -> "发送成功"
+                    is LoginEvent.MailFailed -> "发送失败"
+                }
+                toastStr.toast()
+            }
+        }
+    }
+
+    private fun initViewStates() {
+        viewModel.viewStates.run {
+            observeState(this@LoginActivity, LoginState::isLoginPage) {
+                if (it) {
+                    binding.tvLogin.text = "登录"
+                    replaceFragment(R.id.frag_container) {
+                        LoginFragment.newInstance()
+                    }
+                } else {
+                    binding.tvLogin.text = "注册"
+                    replaceFragment(R.id.frag_container) {
+                        RegisterFragment.newInstance()
+                    }
+                }
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> {
+                finishAfterTransition()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
