@@ -10,6 +10,7 @@ sealed class MainSharedEvent {
         val action: String = "",
         val actionCallback: View.OnClickListener = View.OnClickListener {  }
     ) : MainSharedEvent()
+    object RefreshProfile : MainSharedEvent()
 }
 
 sealed class MainAction {

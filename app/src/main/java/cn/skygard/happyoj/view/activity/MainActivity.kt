@@ -59,7 +59,23 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
 
     override fun onResume() {
         super.onResume()
-        initView(false)
+        if (UserManager.checkLogin()) {
+            viewModel.dispatch(MainAction.RefreshData)
+            return
+        }
+        navHeader.run {
+            val sivProfile = findViewById<ShapeableImageView>(R.id.sivProfileOpen)
+            val profileName = findViewById<TextView>(R.id.profileName)
+            val email = findViewById<TextView>(R.id.email)
+            profileName.text = "未登录"
+            email.text = "未登录"
+            Glide.with(this@MainActivity)
+                .load(R.drawable.default_avatar)
+                .into(sivProfile)
+            Glide.with(this@MainActivity)
+                .load(R.drawable.default_avatar)
+                .into(binding.ivProfileOpen)
+        }
     }
 
     /**
@@ -104,6 +120,10 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             }
         }
 
+        if (UserManager.checkLogin()) {
+            viewModel.dispatch(MainAction.RefreshData)
+        }
+
         navHeader.run {
             findViewById<AppCompatImageView>(R.id.iv_switch_dayNight).setOnClickListener { view ->
                 if (BaseApp.darkMode) { // 黑夜
@@ -139,25 +159,18 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             val sivProfile = findViewById<ShapeableImageView>(R.id.sivProfileOpen)
             val profileName = findViewById<TextView>(R.id.profileName)
             val email = findViewById<TextView>(R.id.email)
-            if (UserManager.checkLogin()) {
-                viewModel.dispatch(MainAction.RefreshData)
-                sivProfile.setOnClickListener {
+            sivProfile.setOnClickListener {
+                if (UserManager.checkLogin()) {
                     it.transitionName = "profile-opener-header"
                     ProfileActivity.startWithAnim(this@MainActivity,
                         Pair.create(it, "profile-opener-header"))
-                }
-                val user = User.fromSp()
-                profileName.text = user.name
-                email.text = user.email
-                Glide.with(this@MainActivity)
-                    .load(user.avatarUrl)
-                    .into(sivProfile)
-            } else {
-                profileName.text = "未登录"
-                email.text = "未登录"
-                sivProfile.setOnClickListener {
+                } else {
                     LoginActivity.start(this@MainActivity)
                 }
+            }
+            if (!UserManager.checkLogin()) {
+                profileName.text = "未登录"
+                email.text = "未登录"
                 Glide.with(this@MainActivity)
                     .load(R.drawable.default_avatar)
                     .into(sivProfile)
@@ -170,22 +183,17 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                 binding.searchBar.transitionName = "search"
                 SearchActivity.start(this@MainActivity, binding.searchBar, "search")
             }
-            if (UserManager.checkLogin()) {
-                viewModel.dispatch(MainAction.RefreshData)
-                ivProfileOpen.setOnClickListener {
+            ivProfileOpen.setOnClickListener {
+                if (UserManager.checkLogin()) {
                     Log.d("MainActivity", "open profile")
                     binding.ivProfileOpen.transitionName = "profile-opener-header"
                     ProfileActivity.startWithAnim(this@MainActivity,
                         Pair.create(binding.ivProfileOpen, "profile-opener-header"))
-                }
-                val user = User.fromSp()
-                Glide.with(this@MainActivity)
-                    .load(user.avatarUrl)
-                    .into(ivProfileOpen)
-            } else {
-                ivProfileOpen.setOnClickListener {
+                } else {
                     LoginActivity.start(this@MainActivity)
                 }
+            }
+            if (!UserManager.checkLogin()) {
                 Glide.with(this@MainActivity)
                     .load(R.drawable.default_avatar)
                     .into(ivProfileOpen)
@@ -228,6 +236,22 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                     Snackbar.make(binding.root, it.mess, Snackbar.LENGTH_SHORT)
                         .setAction(it.action, it.actionCallback)
                         .show()
+                }
+                is MainSharedEvent.RefreshProfile -> {
+                    navHeader.run {
+                        val sivProfile = findViewById<ShapeableImageView>(R.id.sivProfileOpen)
+                        val profileName = findViewById<TextView>(R.id.profileName)
+                        val email = findViewById<TextView>(R.id.email)
+                        val user = User.fromSp()
+                        profileName.text = user.name
+                        email.text = user.email
+                        Glide.with(this@MainActivity)
+                            .load(user.avatarUrl)
+                            .into(sivProfile)
+                        Glide.with(this@MainActivity)
+                            .load(user.avatarUrl)
+                            .into(binding.ivProfileOpen)
+                    }
                 }
             }
         }

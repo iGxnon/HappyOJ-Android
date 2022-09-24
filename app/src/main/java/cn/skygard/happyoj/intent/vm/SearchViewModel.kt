@@ -1,6 +1,7 @@
 package cn.skygard.happyoj.intent.vm
 
 import android.util.Log
+import cn.skygard.common.base.ext.defaultSp
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.mvi.ext.setState
 import cn.skygard.common.mvi.ext.triggerEvents
@@ -17,7 +18,14 @@ class SearchViewModel : BaseViewModel<SearchState, SearchAction, SearchEvent>(Se
     private val quickSearchJob: Job? = null
 
     private val histories by lazyUnlock {
-        mutableListOf("你是一个一个一个一个Lab啊", "Hello World", "Hell World")
+        ArrayList(defaultSp.getStringSet("history", emptySet())?.toList()?: emptyList())
+    }
+
+    private fun ArrayList<String>.addLimit(text: String) {
+        while (this.size >= 15) {
+            this.removeAt(0)
+        }
+        this.add(text)
     }
 
     override fun dispatch(action: SearchAction) {
@@ -42,7 +50,10 @@ class SearchViewModel : BaseViewModel<SearchState, SearchAction, SearchEvent>(Se
     }
 
     private fun searchFor(text: String) {
-
+        histories.addLimit(text)
+        defaultSp.edit()
+            .putStringSet("history", histories.toSet())
+            .apply()
     }
 
     private fun quickSearchFor(text: String) {
@@ -51,6 +62,9 @@ class SearchViewModel : BaseViewModel<SearchState, SearchAction, SearchEvent>(Se
 
     private fun deleteHistory(text: String) {
         histories.remove(text)
+        defaultSp.edit()
+            .putStringSet("history", histories.toSet())
+            .apply()
     }
 
 }

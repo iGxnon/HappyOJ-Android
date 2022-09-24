@@ -21,16 +21,22 @@ class AutoCookieInterceptor : Interceptor {
             val cookies = cookie.split(";")
             val accessToken = cookies.find {
                 it.startsWith("x-token=")
-            }?.split("=")?.get(1)
+            }?.replace("x-token=", "")?.trim()
             val refreshToken = cookies.find {
                 it.startsWith("refresh-token=")
-            }?.split("=")?.get(1)
+            }?.replace("refresh-token=", "")?.trim()
             val idToken = cookies.find {
                 it.startsWith("id-token=")
-            }?.split("=")?.get(1)
+            }?.replace("id-token=", "")?.trim()
             Log.d("AutoCookieInterceptor", cookie)
             accessToken?.run {
                 Log.d("AutoCookieInterceptor", accessToken)
+            }
+            refreshToken?.run {
+                Log.d("AutoCookieInterceptor", refreshToken)
+            }
+            idToken?.run {
+                Log.d("AutoCookieInterceptor", idToken)
             }
             if (accessToken != null || refreshToken != null || idToken != null) {
                 UserManager.refreshToken(accessToken, refreshToken, idToken)

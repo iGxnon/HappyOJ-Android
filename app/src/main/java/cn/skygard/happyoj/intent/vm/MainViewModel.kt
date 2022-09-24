@@ -39,6 +39,7 @@ class MainViewModel :
                             .putString("email", this.data.userSubject.email)
                             .apply()
                         Log.d("MainViewModel", "refresh data to ${this.data.userSubject}")
+                        mViewEvents.triggerEvent(MainSharedEvent.RefreshProfile)
                     }
                 }
             } catch (e: Exception) {

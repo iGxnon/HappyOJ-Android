@@ -1,10 +1,16 @@
 package cn.skygard.happyoj.domain.logic
 
+import android.util.Base64
 import android.util.Log
+import androidx.room.RoomDatabase
 import cn.skygard.common.base.ext.defaultSp
 import cn.skygard.happyoj.domain.model.User
 import cn.skygard.happyoj.intent.state.LoginEvent
+import cn.skygard.happyoj.repo.database.AppDatabase
+import cn.skygard.happyoj.repo.database.entity.LoginUserEntity
 import cn.skygard.happyoj.repo.remote.RetrofitHelper
+import com.google.gson.JsonObject
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.lang.Exception
 
@@ -13,11 +19,27 @@ object UserManager {
 
     suspend fun login(username: String, pwd: String): LoginEvent {
         try {
-            if (RetrofitHelper.userService.login(username, pwd).ok) {
+            val result = RetrofitHelper.userService.login(username, pwd)
+            if (result.ok) {
                 while (!checkLogin()) {
                     defaultSp.edit().putBoolean("is_login", true).apply()
+                    val payload = result.data.oauth2Token.idToken.tokenValue.split(".")[1]
+                    JSONObject(
+                        Base64.decode(payload, Base64.DEFAULT).decodeToString()
+                    ).getJSONObject("user_details").run {
+                        AppDatabase.INSTANCE.loginUserDao().insert(
+                            LoginUserEntity(
+                                uid = getInt("id"),
+                                name = getString("username"),
+                                avatarUrl = getString("picture"),
+                                email = getString("email"),
+                                idToken = result.data.oauth2Token.idToken.tokenValue,
+                                accessToken = result.data.oauth2Token.accessToken.tokenValue,
+                                refreshToken = result.data.oauth2Token.refreshToken.tokenValue,
+                            )
+                        )
+                    }
                 }
-                Log.d("UserManager", "${checkLogin()}")
                 return LoginEvent.LoginSuccess
             }
         } catch (e: Exception) {
