@@ -43,6 +43,8 @@
                     app:layout_scrollFlags="scroll|enterAlways|snap"
                     android:padding="15dp">
 
+<!--                   TODO 自定义 Searchbar View-->
+
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         app:cardBackgroundColor="?colorPrimaryVariant"
@@ -86,10 +88,10 @@
                                 android:layout_weight="1"
                                 android:padding="10dp"
                                 android:layout_gravity="center"
-                                android:src="@drawable/test_avatar"
+                                tools:src="@drawable/test_avatar"
                                 android:layout_width="48dp"
                                 android:layout_height="50dp"
-                                app:strokeColor="?colorPrimary"
+                                app:strokeColor="?colorPrimaryVariant"
                                 app:strokeWidth="1dp"
                                 android:scaleType="centerCrop"
                                 app:shapeAppearance="@style/CircleStyle"

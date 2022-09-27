@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "t_login_users")
 data class LoginUserEntity(
     @PrimaryKey
-    val uid: Int,  // 来自后端
+    val uid: Long,  // 来自后端
     @ColumnInfo(name = "username")
     val name: String,
     @ColumnInfo(name = "avatar_url")

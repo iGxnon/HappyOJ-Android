@@ -31,6 +31,7 @@ import cn.skygard.happyoj.domain.model.User
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.dialog.MaterialDialogs
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
@@ -40,28 +41,16 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
     override val isCancelStatusBar: Boolean
         get() = true
 
-    private val user by lazyUnlock {
-        User.fromSp()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        initAnim()
-        super.onCreate(savedInstanceState)
-        initView()
-    }
-
-    private fun initAnim() {
-        if (!intent.hasExtra(TransitionNameHeader)) return
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-        window.sharedElementsUseOverlay = false
-        val transitionSet = TransitionSet()
-        transitionSet.addTransition(ChangeBounds())
-        transitionSet.addTransition(ChangeClipBounds())
-        transitionSet.addTransition(ChangeImageTransform())
-        transitionSet.duration = 200
-        window.sharedElementEnterTransition = transitionSet
-        window.sharedElementExitTransition = transitionSet
-        binding.ivHeader.transitionName = intent.getStringExtra(TransitionNameHeader)
+        super.onCreate(savedInstanceState)
+        window.enterTransition = MaterialFadeThrough().apply {
+            duration = 200L
+        }
+        window.exitTransition = MaterialFadeThrough().apply {
+            duration = 200L
+        }
+        initView()
     }
 
     private fun initView() {
@@ -112,19 +101,14 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
 
     companion object {
 
-        const val TransitionNameHeader = "header"
 
         fun start(ctx: Context) {
-            ctx.startActivity(Intent(ctx, ProfileActivity::class.java))
-        }
-
-        fun startWithAnim(ctx: Context, headerTransient: Pair<View, String>) {
-            assert(ctx is Activity)
-            ctx.startActivity(Intent(ctx, ProfileActivity::class.java)
-                .apply {
-                       putExtra(TransitionNameHeader, headerTransient.second)
-                },
-                ActivityOptions.makeSceneTransitionAnimation(ctx as Activity, headerTransient).toBundle())
+            if (ctx is Activity) {
+                ctx.startActivity(Intent(ctx, ProfileActivity::class.java),
+                    ActivityOptions.makeSceneTransitionAnimation(ctx).toBundle())
+            } else {
+                ctx.startActivity(Intent(ctx, ProfileActivity::class.java))
+            }
         }
     }
 }

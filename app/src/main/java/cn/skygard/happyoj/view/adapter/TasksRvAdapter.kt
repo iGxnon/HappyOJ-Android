@@ -10,12 +10,11 @@ import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.visible
 import cn.skygard.happyoj.databinding.ItemTasksBinding
-import cn.skygard.happyoj.domain.model.TasksItem
+import cn.skygard.happyoj.repo.remote.model.Task
 import com.bumptech.glide.Glide
-import java.lang.String.format
 
-class TasksRvAdapter(private val onClick: (TasksItem, View, String, View, String) -> Unit) :
-    ListAdapter<TasksItem, TasksRvAdapter.Holder>(TasksItemCallback()){
+class TasksRvAdapter(private val onClick: (Task.TaskSubject, View, String, View, String) -> Unit) :
+    ListAdapter<Task.TaskSubject, TasksRvAdapter.Holder>(TasksItemCallback()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(ItemTasksBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -40,11 +39,11 @@ class TasksRvAdapter(private val onClick: (TasksItem, View, String, View, String
             }
         }
 
-        fun bind(item: TasksItem) {
+        fun bind(item: Task.TaskSubject) {
             binding.run {
                 tvTitle.text = item.title
                 tvDesc.text = item.summary
-                tvDate.text = format("%tF", item.date)
+                tvDate.text = item.updateTime.split(" ")[0]
                 if (item.imageUrl != "") {
                     ivShortcut.visible()
                     Glide.with(BaseApp.appContext)
@@ -58,16 +57,16 @@ class TasksRvAdapter(private val onClick: (TasksItem, View, String, View, String
         }
     }
 
-    internal class TasksItemCallback : DiffUtil.ItemCallback<TasksItem>() {
-        override fun areItemsTheSame(oldItem: TasksItem, newItem: TasksItem): Boolean {
+    internal class TasksItemCallback : DiffUtil.ItemCallback<Task.TaskSubject>() {
+        override fun areItemsTheSame(oldItem: Task.TaskSubject, newItem: Task.TaskSubject): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: TasksItem, newItem: TasksItem): Boolean {
-            return oldItem.taskId == newItem.taskId
+        override fun areContentsTheSame(oldItem: Task.TaskSubject, newItem: Task.TaskSubject): Boolean {
+            return oldItem.id == newItem.id
         }
 
-        override fun getChangePayload(oldItem: TasksItem, newItem: TasksItem): Any = ""
+        override fun getChangePayload(oldItem: Task.TaskSubject, newItem: Task.TaskSubject): Any = ""
     }
 
 

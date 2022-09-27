@@ -1,27 +1,31 @@
 package cn.skygard.happyoj.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.mvi.BaseVmBindFragment
 import cn.skygard.common.mvi.ext.observeEvent
 import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.databinding.FragmentTasksBinding
+import cn.skygard.happyoj.domain.logic.UserManager
 import cn.skygard.happyoj.intent.state.*
 import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.intent.vm.TasksViewModel
 import cn.skygard.happyoj.view.activity.LabActivity
-import cn.skygard.happyoj.view.adapter.TasksRvAdapter
+import cn.skygard.happyoj.view.adapter.TasksPagingAdapter
+import kotlinx.coroutines.launch
 
 class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>() {
 
     private val parentViewModel by activityViewModels<MainViewModel>()
-    private val tasksRvAdapter by lazyUnlock {
-        TasksRvAdapter { item, headerView, transitionNameHeader, descView, transitionNameDesc ->
-            LabActivity.start(requireContext(), item, headerView,
-                transitionNameHeader, descView, transitionNameDesc)
+    private val tasksAdapter by lazyUnlock {
+        TasksPagingAdapter { item ->
+            LabActivity.start(requireContext(), item)
         }
     }
 
@@ -32,33 +36,38 @@ class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>()
     }
 
     private fun initView() {
-        viewModel.dispatch(TasksAction.OnSwipeRefresh)
         binding.rvTasks.run {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = tasksRvAdapter
+            adapter = tasksAdapter
+        }
+        tasksAdapter.addLoadStateListener {
+            when (it.refresh) {
+                is LoadState.Loading -> binding.srlTasks.isRefreshing = true
+                is LoadState.NotLoading -> binding.srlTasks.isRefreshing = false
+                is LoadState.Error -> {
+                    binding.srlTasks.isRefreshing = false
+                    if (UserManager.checkLogin()) {
+                        "加载失败".toast()
+                    }
+                }
+            }
         }
         binding.srlTasks.setOnRefreshListener {
-            viewModel.dispatch(TasksAction.OnSwipeRefresh)
+//            binding.rvTasks.swapAdapter(tasksAdapter, true)
+            if (UserManager.checkLogin()) {
+                tasksAdapter.refresh()
+            } else {
+                "请登录后获取实验".toast()
+                binding.srlTasks.isRefreshing = false
+            }
         }
     }
 
     private fun initViewState() {
         viewModel.viewStates.run {
-            observeState(this@TasksFragment, TasksState::tasks) {
-                tasksRvAdapter.submitList(it)
-            }
-            observeState(this@TasksFragment, TasksState::fetchState) {
-                when (it) {
-                    FetchState.Fetching -> {
-                        binding.srlTasks.isRefreshing = true
-                    }
-                    FetchState.Fetched -> {
-                        binding.srlTasks.isRefreshing = false
-                    }
-                    FetchState.NotFetched -> {
-                        binding.srlTasks.isRefreshing = false
-                        toast("Load failed!")
-                    }
+            observeState(this@TasksFragment, TasksState::tasksPaging) {
+                viewLifecycleScope.launch {
+                    tasksAdapter.submitData(it)
                 }
             }
         }

@@ -30,6 +30,7 @@ import cn.skygard.happyoj.intent.state.MainAction
 import cn.skygard.happyoj.view.fragment.SubmitsFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
@@ -161,9 +162,7 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             val email = findViewById<TextView>(R.id.email)
             sivProfile.setOnClickListener {
                 if (UserManager.checkLogin()) {
-                    it.transitionName = "profile-opener-header"
-                    ProfileActivity.startWithAnim(this@MainActivity,
-                        Pair.create(it, "profile-opener-header"))
+                    ProfileActivity.start(this@MainActivity)
                 } else {
                     LoginActivity.start(this@MainActivity)
                 }
@@ -186,9 +185,7 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
             ivProfileOpen.setOnClickListener {
                 if (UserManager.checkLogin()) {
                     Log.d("MainActivity", "open profile")
-                    binding.ivProfileOpen.transitionName = "profile-opener-header"
-                    ProfileActivity.startWithAnim(this@MainActivity,
-                        Pair.create(binding.ivProfileOpen, "profile-opener-header"))
+                    ProfileActivity.start(this@MainActivity)
                 } else {
                     LoginActivity.start(this@MainActivity)
                 }
@@ -247,9 +244,11 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                         email.text = user.email
                         Glide.with(this@MainActivity)
                             .load(user.avatarUrl)
+                            .apply(RequestOptions().error(R.drawable.err_avatar))
                             .into(sivProfile)
                         Glide.with(this@MainActivity)
                             .load(user.avatarUrl)
+                            .apply(RequestOptions().error(R.drawable.err_avatar))
                             .into(binding.ivProfileOpen)
                     }
                 }

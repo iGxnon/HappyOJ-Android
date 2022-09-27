@@ -13,11 +13,11 @@
         android:layout_marginStart="5dp"
         android:padding="10dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/test_avatar"
+        tools:src="@drawable/test_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearance="@style/CircleStyle"
-        app:strokeColor="@color/prime_color"
+        app:strokeColor="?colorPrimaryVariant"
         app:strokeWidth="1dp"
         tools:ignore="ContentDescription" />
 

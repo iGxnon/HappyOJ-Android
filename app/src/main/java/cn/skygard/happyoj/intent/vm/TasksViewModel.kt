@@ -2,52 +2,52 @@ package cn.skygard.happyoj.intent.vm
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import cn.skygard.common.mvi.ext.setState
 import cn.skygard.common.mvi.ext.triggerEvent
 import cn.skygard.common.mvi.vm.BaseViewModel
 import cn.skygard.happyoj.intent.state.*
-import cn.skygard.happyoj.domain.model.TasksItem
-import kotlinx.coroutines.delay
+import cn.skygard.happyoj.repo.pagingsource.TasksPagingSource
+import cn.skygard.happyoj.repo.remote.model.Result
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
 
 class TasksViewModel :
     BaseViewModel<TasksState, TasksAction, MainSharedEvent>(TasksState()) {
 
-    override fun dispatch(action: TasksAction) {
-        Log.d("TasksViewModel", "received an action $action")
-        when (action) {
-            is TasksAction.OnSwipeRefresh -> fetchTasks()
-            is TasksAction.AddToFavor -> {
-                mViewEvents.triggerEvent(MainSharedEvent.ShowSnack("已经添加进收藏", "取消"))
+    private val pagingData by lazy {
+        Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false,
+                initialLoadSize = 20,
+            ),
+            pagingSourceFactory = {
+                TasksPagingSource()
+            }
+        ).flow.catch { e ->
+            Result.onError(e.cause)
+        }.cachedIn(viewModelScope)
+    }
+
+    init {
+        viewModelScope.launch {
+            pagingData.collectLatest {
+                mViewStates.setState {
+                    copy(tasksPaging = it)
+                }
             }
         }
     }
 
-    private fun fetchTasks() {
-        mViewStates.setState {
-            copy(fetchState = FetchState.Fetching)
-        }
-        // for test
-        viewModelScope.launch {
-            delay(300)
-            val tasks = listOf(
-                TasksItem(
-                    taskId = 1,
-                    title = "实验一：基础语法",
-                    summary = "学习 Golang 的基础语法，杀马特团长，你就领那俩狗徒弟，就像那舒克和贝塔，见到你必须给你头套薅掉",
-                    date = Calendar.getInstance().time,
-                ),
-                TasksItem(
-                    taskId = 2,
-                    title = "实验二：接口",
-                    summary = "使用 Golang 的接口，我徒弟呢？杀马特团长，你给我等着，你给我等着！！！",
-                    imageUrl = "https://img.skygard.cn/dahuoji.jpeg",
-                    date = Calendar.getInstance().time,
-                )
-            )
-            mViewStates.setState {
-                copy(fetchState = FetchState.Fetched, tasks = tasks)
+    override fun dispatch(action: TasksAction) {
+        Log.d("TasksViewModel", "received an action $action")
+        when (action) {
+            is TasksAction.AddToFavor -> {
+                mViewEvents.triggerEvent(MainSharedEvent.ShowSnack("已经添加进收藏", "取消"))
             }
         }
     }

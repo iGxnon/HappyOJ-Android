@@ -10,10 +10,12 @@ import java.util.*
 class AutoCookieInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = if (UserManager.checkLogin()) {
+            val cookies =  UserManager.getAuthCookie()
+            Log.d("AutoCookieInterceptor", cookies)
             chain.request().newBuilder()
-                .header("Cookie", UserManager.getAuthCookie())
+                .header("cookie", cookies)
                 .build()
-        }else {
+        } else {
             chain.request()
         }
         val resp = chain.proceed(request)
@@ -28,7 +30,6 @@ class AutoCookieInterceptor : Interceptor {
             val idToken = cookies.find {
                 it.startsWith("id-token=")
             }?.replace("id-token=", "")?.trim()
-            Log.d("AutoCookieInterceptor", cookie)
             accessToken?.run {
                 Log.d("AutoCookieInterceptor", accessToken)
             }

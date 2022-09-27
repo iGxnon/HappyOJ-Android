@@ -9,7 +9,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         app:color="?colorPrimaryVariant"
-        android:id="@+id/til_email"
+        android:id="@+id/til_repo"
         app:boxBackgroundColor="?colorPrimaryVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,6 +25,30 @@
             android:layout_height="wrap_content"
             android:importantForAutofill="no"
             android:hint="仓库 URL"
+            android:textColorHint="?colorOnPrimary"
+            android:inputType="textUri"
+            tools:ignore="HardcodedText,LabelFor" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        app:color="?colorPrimaryVariant"
+        android:id="@+id/til_desc"
+        app:boxBackgroundColor="?colorPrimaryVariant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        app:hintTextColor="?colorOnPrimary"
+        android:scrollbarAlwaysDrawHorizontalTrack="true"
+        android:textColorHint="?colorOnPrimary">
+        <EditText
+            android:id="@+id/et_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:importantForAutofill="no"
+            android:hint="想说的话"
             android:textColorHint="?colorOnPrimary"
             android:inputType="textUri"
             tools:ignore="HardcodedText,LabelFor" />

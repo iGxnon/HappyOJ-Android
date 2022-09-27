@@ -6,39 +6,34 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.transition.ChangeBounds
-import android.transition.ChangeClipBounds
-import android.transition.ChangeImageTransform
-import android.transition.TransitionSet
 import android.util.Log
-import android.util.Pair
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.LinearInterpolator
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.adapter.BaseVPAdapter
 import cn.skygard.common.base.ext.color
 import cn.skygard.common.base.ext.dp2px
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.mvi.BaseVmBindActivity
+import cn.skygard.common.mvi.ext.observeEvent
 import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityLabBinding
 import cn.skygard.happyoj.databinding.DialogFeedbackBinding
 import cn.skygard.happyoj.databinding.DialogRepoSubmitBinding
-import cn.skygard.happyoj.domain.model.TasksItem
 import cn.skygard.happyoj.intent.state.LabAction
+import cn.skygard.happyoj.intent.state.LabEvent
 import cn.skygard.happyoj.intent.state.LabState
 import cn.skygard.happyoj.intent.state.Pages
 import cn.skygard.happyoj.intent.vm.LabViewModel
+import cn.skygard.happyoj.repo.database.AppDatabase
+import cn.skygard.happyoj.repo.remote.model.Task
 import cn.skygard.happyoj.view.fragment.LabCommitFragment
 import cn.skygard.happyoj.view.fragment.LabDetailFragment
 import com.bumptech.glide.Glide
@@ -46,8 +41,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.regex.Pattern
+import com.google.android.material.transition.platform.MaterialFadeThrough
 
 class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
@@ -55,12 +55,12 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
         get() = true
 
     private val taskItem by lazyUnlock {
-        TasksItem(
-            taskId = intent.getIntExtra("task_id", -1),
+        Task.TaskSubject(
+            id = intent.getLongExtra("task_id", -1L),
             title = intent.getStringExtra("task_title")!!,
             imageUrl = intent.getStringExtra("task_img")!!,
-            date = intent.getSerializableExtra("task_date")!! as Date,
-            summary = intent.getStringExtra("task_summary")!!
+            updateTime = intent.getStringExtra("task_date")!!,
+            summary = intent.getStringExtra("task_summary")!!,
         )
     }
 
@@ -82,11 +82,31 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
             delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
         }
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        setEnterSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         super.onCreate(savedInstanceState)
-        initAnim()
+        window.enterTransition = MaterialFadeThrough().apply {
+            duration = 200L
+        }
+        window.exitTransition = MaterialFadeThrough().apply {
+            duration = 200L
+        }
         initView()
         initViewState()
+        initViewEvent()
+    }
+
+    private fun initViewEvent() {
+        viewModel.viewEvents.observeEvent(this) {
+            when (it) {
+                LabEvent.SubmitFailed -> {
+                    "提交失败".toast()
+                }
+                LabEvent.SubmitSuccess -> {
+                    "提交成功".toast()
+                }
+                else -> {}
+            }
+        }
     }
 
     private fun initViewState() {
@@ -129,16 +149,6 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 }
             }
         }
-    }
-
-    private fun initAnim() {
-        val transitionSet = TransitionSet()
-        transitionSet.addTransition(ChangeBounds())
-        transitionSet.addTransition(ChangeClipBounds())
-        transitionSet.addTransition(ChangeImageTransform())
-        window.sharedElementEnterTransition = transitionSet
-        window.sharedElementExitTransition = transitionSet
-        binding.tvDesc.transitionName = intent.getStringExtra(TransitionNameDesc)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -253,22 +263,30 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
     private fun showSubmitRepoUrl() {
         val dialogBinding = DialogRepoSubmitBinding.inflate(layoutInflater)
-        // TODO 自适应 提交/修改
-        val dialog = MaterialAlertDialogBuilder(this)
-            .setTitle("提交/修改仓库")
-            .setView(dialogBinding.root)
-            .setPositiveButton("提交") { _, _ ->
-                val email = dialogBinding.etRepoUrl.text
-                val feedback = dialogBinding.etRepoUrl.text
-                Log.d("LabActivity", "Email: $email")
-                Log.d("LabActivity", "Feedback: $feedback")
-                Snackbar.make(binding.root, "提交成功", Snackbar.LENGTH_SHORT).show()
+        CoroutineScope(Dispatchers.IO).launch {
+            val hasSubmit = AppDatabase.INSTANCE.taskDao().getRepoUrl(taskItem.id) != ""
+            withContext(Dispatchers.Main) {
+                val title = if (hasSubmit) {
+                    "修改仓库"
+                } else {
+                    "提交仓库"
+                }
+                val dialog = MaterialAlertDialogBuilder(this@LabActivity)
+                    .setTitle(title)
+                    .setView(dialogBinding.root)
+                    .setPositiveButton(if (hasSubmit) "提交" else "修改") { _, _ ->
+                        val repoUrl = dialogBinding.etRepoUrl.text.toString()
+                        val desc = dialogBinding.etDesc.text.toString()
+                        Log.d("LabActivity", "RepoUrl: $repoUrl")
+                        viewModel.dispatch(LabAction.SubmitRepoUrl(repoUrl, desc))
+                    }
+                    .setNegativeButton("取消"){_, _ -> }.create()
+                dialog.show()
+                val onColor = ContextCompat.getColor(this@LabActivity, R.color.prim_on_color)
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(onColor)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(onColor)
             }
-            .setNegativeButton("取消"){_, _ -> }.create()
-        dialog.show()
-        val onColor = ContextCompat.getColor(this, R.color.prim_on_color)
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(onColor)
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(onColor)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -281,28 +299,18 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
     companion object {
 
-        @Deprecated("废弃")
-        private const val TransitionNameHeader = "transition_name_header"
-        private const val TransitionNameDesc = "transition_name_desc"
 
         val random = Random()
 
-        fun start(ctx: Context, task: TasksItem,
-                  titleView: View, transitionNameHeader: String,
-                  descView: View, transitionNameDesc: String) {
+        fun start(ctx: Context, task: Task.TaskSubject) {
             val intent = Intent(ctx, LabActivity::class.java)
-                .putExtra("task_id", task.taskId)
+                .putExtra("task_id", task.id)
                 .putExtra("task_title", task.title)
                 .putExtra("task_img", task.imageUrl)
-                .putExtra("task_date", task.date)
+                .putExtra("task_date", task.updateTime)
                 .putExtra("task_summary", task.summary)
-                .putExtra(TransitionNameHeader, transitionNameHeader)
-                .putExtra(TransitionNameDesc, transitionNameDesc)
             if (ctx is Activity) {
-                ctx.startActivity(intent,
-                    ActivityOptions.makeSceneTransitionAnimation(ctx,
-                        Pair.create(titleView, transitionNameHeader),
-                        Pair.create(descView, transitionNameDesc)).toBundle())
+                ctx.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ctx).toBundle())
             } else {
                 ctx.startActivity(intent)
             }

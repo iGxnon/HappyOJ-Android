@@ -45,7 +45,7 @@ class LabDetailFragment :
     private fun initView() {
         binding.run {
             srlTask.setOnRefreshListener {
-                viewModel.dispatch(LabAction.FetchContent())
+                viewModel.dispatch(LabAction.FetchContent(true))
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 nvContent.setOnScrollChangeListener {
@@ -60,7 +60,7 @@ class LabDetailFragment :
                 }
             }
         }
-        viewModel.dispatch(LabAction.FetchContent())
+        viewModel.dispatch(LabAction.FetchContent(false))
     }
 
     private fun initViewStates() {
@@ -96,12 +96,13 @@ class LabDetailFragment :
                     LabEvent.ScrollToTop -> {
                         ValueAnimator.ofInt(binding.nvContent.scrollY, 0).run {
                             interpolator = AccelerateInterpolator()
-                            addUpdateListener {
-                                binding.nvContent.scrollY = it.animatedValue as Int
+                            addUpdateListener { anim ->
+                                binding.nvContent.scrollY = anim.animatedValue as Int
                             }
                             start()
                         }
                     }
+                    else -> {}
                 }
             }
         }

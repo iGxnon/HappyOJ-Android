@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5f4aa428c5b2df2f01be13187ffdfd77",
+    "identityHash": "408d96860522465dfdf1343f27205151",
     "entities": [
       {
         "tableName": "t_login_users",
@@ -62,7 +62,7 @@
       },
       {
         "tableName": "t_tasks",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tid` INTEGER NOT NULL, `title` TEXT NOT NULL, `summary` TEXT NOT NULL DEFAULT '', `image_url` TEXT NOT NULL DEFAULT '', `md_content` TEXT NOT NULL DEFAULT '', `date` INTEGER NOT NULL, `repo_url` TEXT NOT NULL DEFAULT '', `repo_type` TEXT NOT NULL DEFAULT 'github', PRIMARY KEY(`tid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tid` INTEGER NOT NULL, `title` TEXT NOT NULL, `summary` TEXT NOT NULL DEFAULT '', `image_url` TEXT NOT NULL DEFAULT '', `md_content` TEXT NOT NULL DEFAULT '', `date` TEXT NOT NULL, `repo_url` TEXT NOT NULL DEFAULT '', `repo_type` TEXT NOT NULL DEFAULT 'github', PRIMARY KEY(`tid`))",
         "fields": [
           {
             "fieldPath": "tid",
@@ -100,7 +100,7 @@
           {
             "fieldPath": "date",
             "columnName": "date",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -131,7 +131,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5f4aa428c5b2df2f01be13187ffdfd77')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '408d96860522465dfdf1343f27205151')"
     ]
   }
 }

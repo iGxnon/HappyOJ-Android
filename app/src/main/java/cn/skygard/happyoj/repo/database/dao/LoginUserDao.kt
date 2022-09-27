@@ -15,6 +15,9 @@ interface LoginUserDao {
     @Delete
     suspend fun delete(userEntity: LoginUserEntity)
 
+    @Query("DELETE FROM t_login_users WHERE uid = :uid")
+    suspend fun deleteAt(uid: Long)
+
     @Query("SELECT id_token FROM t_login_users WHERE uid = :uid")
     suspend fun getIdToken(uid: Int): String?
 

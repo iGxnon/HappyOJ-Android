@@ -10,6 +10,7 @@
         <entry key="app/src/main/res/drawable-night/ic_dark_light_24.xml" value="0.2025" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.146" />
         <entry key="app/src/main/res/drawable/bg_search_view.xml" value="0.1785" />
+        <entry key="app/src/main/res/drawable/err_avatar.xml" value="0.2025" />
         <entry key="app/src/main/res/drawable/ic_account_box_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_add_24.xml" value="0.1965" />
         <entry key="app/src/main/res/drawable/ic_anim_arrow_down_up.xml" value="0.1965" />
@@ -47,6 +48,7 @@
         <entry key="app/src/main/res/drawable/ic_start.xml" value="0.2555" />
         <entry key="app/src/main/res/drawable/ic_submits_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_tasks_24.xml" value="0.256" />
+        <entry key="app/src/main/res/drawable/ic_tupianjiazaishibai03.xml" value="0.2025" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_crash.xml" value="0.32708333333333334" />
         <entry key="app/src/main/res/layout/activity_lab.xml" value="0.37092391304347827" />

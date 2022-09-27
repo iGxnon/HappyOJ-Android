@@ -1,11 +1,11 @@
 package cn.skygard.happyoj.intent.state
 
-import cn.skygard.happyoj.domain.model.TasksItem
+import cn.skygard.happyoj.repo.remote.model.Task
 
 data class SearchState(
     // for SearchFragment
     val fetchState: FetchState = FetchState.Fetched,
-    val result: List<TasksItem> = emptyList(),
+    val result: List<Task.TaskSubject> = emptyList(),
 
     // for SearchHistoryFragment
     val history: List<String> = emptyList(),

@@ -2,16 +2,15 @@ package cn.skygard.happyoj.domain.logic
 
 import android.util.Base64
 import android.util.Log
-import androidx.room.RoomDatabase
 import cn.skygard.common.base.ext.defaultSp
 import cn.skygard.happyoj.domain.model.User
 import cn.skygard.happyoj.intent.state.LoginEvent
 import cn.skygard.happyoj.repo.database.AppDatabase
 import cn.skygard.happyoj.repo.database.entity.LoginUserEntity
 import cn.skygard.happyoj.repo.remote.RetrofitHelper
-import com.google.gson.JsonObject
+import cn.skygard.happyoj.repo.remote.model.Result
+import kotlinx.coroutines.*
 import org.json.JSONObject
-import retrofit2.HttpException
 import java.lang.Exception
 
 // TODO 优化那些丑陋的 try catch
@@ -22,14 +21,17 @@ object UserManager {
             val result = RetrofitHelper.userService.login(username, pwd)
             if (result.ok) {
                 while (!checkLogin()) {
-                    defaultSp.edit().putBoolean("is_login", true).apply()
+                    val editor = defaultSp.edit()
+                    editor.putBoolean("is_login", true)
                     val payload = result.data.oauth2Token.idToken.tokenValue.split(".")[1]
                     JSONObject(
                         Base64.decode(payload, Base64.DEFAULT).decodeToString()
                     ).getJSONObject("user_details").run {
+                        val uid = getLong("id")
+                        editor.putLong("login_uid", uid)
                         AppDatabase.INSTANCE.loginUserDao().insert(
                             LoginUserEntity(
-                                uid = getInt("id"),
+                                uid = uid,
                                 name = getString("username"),
                                 avatarUrl = getString("picture"),
                                 email = getString("email"),
@@ -39,13 +41,12 @@ object UserManager {
                             )
                         )
                     }
+                    editor.apply()
                 }
                 return LoginEvent.LoginSuccess
             }
         } catch (e: Exception) {
-            if (e is HttpException) {
-                Log.d("UserManager", e.response()?.errorBody()?.string()?:"")
-            }
+            Result.onError(e)
         }
         return LoginEvent.LoginFailed
     }
@@ -58,9 +59,7 @@ object UserManager {
                 }
             }
         } catch (e: Exception) {
-            if (e is HttpException) {
-                Log.d("UserManager", e.response()?.errorBody()?.string()?:"")
-            }
+            Result.onError(e)
         }
         return LoginEvent.MailFailed
     }
@@ -74,14 +73,32 @@ object UserManager {
                 }
             }
         } catch (e: Exception) {
-            if (e is HttpException) {
-                Log.d("UserManager", e.response()?.errorBody()?.string()?:"")
-            }
+            Result.onError(e)
         }
         return LoginEvent.RegisterFailed
     }
 
-    fun logout() = defaultSp.edit().putBoolean("is_login", false).apply()
+    fun logout() {
+
+        defaultSp.getLong("login_uid", -1).let { uid ->
+            if (uid != -1L) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    AppDatabase.INSTANCE.loginUserDao().deleteAt(uid)
+                }
+            }
+        }
+
+        defaultSp.edit()
+            .putBoolean("is_login", false)
+            .putString("email", "")
+            .putString("name", "")
+            .putString("id_token", "")
+            .putString("refresh_token", "")
+            .putString("access_token", "")
+            .putString("avatar_url", "")
+            .putLong("login_uid", -1)
+            .apply()
+    }
 
     fun checkLogin() = defaultSp.getBoolean("is_login", false)
 
@@ -105,5 +122,6 @@ object UserManager {
         val user = User.fromSp()
         Log.d("UserManager", "get an auth token")
         return "x-token=${user.accessToken}; refresh-token=${user.refreshToken}; id-token=${user.idToken}"
+//        return "refresh-token=${user.refreshToken}; id-token=${user.idToken}"
     }
 }

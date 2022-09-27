@@ -1,15 +1,14 @@
 package cn.skygard.happyoj.intent.state
 
-import cn.skygard.happyoj.domain.model.TasksItem
+import androidx.paging.PagingData
+import cn.skygard.happyoj.repo.remote.model.Task
 
 data class TasksState (
-    val fetchState: FetchState = FetchState.Fetched,
-    val tasks: List<TasksItem> = emptyList()
+    val tasksPaging: PagingData<Task.TaskSubject> = PagingData.empty()
 )
 
 sealed class TasksAction {
-    object OnSwipeRefresh : TasksAction()
-    data class AddToFavor(val item: TasksItem) : TasksAction()
+    data class AddToFavor(val item: Task.TaskSubject) : TasksAction()
 }
 
 enum class FetchState {
