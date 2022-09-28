@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.Pair
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.TextView
@@ -14,7 +13,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import cn.skygard.common.base.BaseApp
-import cn.skygard.common.base.ext.defaultSp
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.base.ext.visible
@@ -27,7 +25,6 @@ import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.domain.logic.UserManager
 import cn.skygard.happyoj.domain.model.User
 import cn.skygard.happyoj.intent.state.MainAction
-import cn.skygard.happyoj.view.fragment.SubmitsFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -41,6 +38,9 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         get() = false
 
     override val statusBarColor: Int
+        get() = ContextCompat.getColor(this, R.color.prime_color)
+
+    override val navigationBarColor: Int
         get() = ContextCompat.getColor(this, R.color.prime_color)
 
     private val navHeader by lazyUnlock {
@@ -211,13 +211,16 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                                 TasksFragment.newInstance()
                             }
                         }
-                        R.id.nav_submits -> {
-                            Log.d("MainActivity", "navigation to submits")
-                            switchToolbar(true)
-                            replaceFragment(R.id.frag_container) {
-                                SubmitsFragment.newInstance()
-                            }
+                        R.id.nav_favor -> {
+                            Log.d("MainActivity", "navigation to favor")
                         }
+//                        R.id.nav_submits -> {
+//                            Log.d("MainActivity", "navigation to submits")
+//                            switchToolbar(true)
+//                            replaceFragment(R.id.frag_container) {
+//                                SubmitsFragment.newInstance()
+//                            }
+//                        }
                     }
                     binding.drawer.closeDrawer(binding.navView)
                     true

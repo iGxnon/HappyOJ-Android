@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?colorPrimary"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.activity.CommentActivity">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways|snap"
+                tools:title="测试题目"
+                app:titleTextColor="?colorOnPrimary" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_weight="2"
+        android:layout_height="0dp">
+
+        <TextView
+            android:id="@+id/tv_no_comment"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:text="没有评测"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_comment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.core.widget.NestedScrollView>
+
+    </FrameLayout>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_weight="3"
+        android:layout_height="0dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_submit_checkpoints"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</LinearLayout>

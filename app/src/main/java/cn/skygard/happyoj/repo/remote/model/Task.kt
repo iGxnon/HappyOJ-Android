@@ -15,9 +15,9 @@ data class Task(
         @SerializedName("attr")
         val attr: Int = 0,
         @SerializedName("create_time")
-        val createTime: String? = null,
+        var createTime: String? = null,
         @SerializedName("deadline")
-        val deadline: String? = null,
+        var deadline: String? = null,
         @SerializedName("id")
         val id: Long,
         @SerializedName("image_url")
@@ -31,7 +31,11 @@ data class Task(
         @SerializedName("title")
         val title: String,
         @SerializedName("update_time")
-        val updateTime: String
+        val updateTime: String,
+
+        var submitState: Boolean? = null,
+        var repoState: String? = "",
+        var commentState: Boolean? = null,
     )
 }
 

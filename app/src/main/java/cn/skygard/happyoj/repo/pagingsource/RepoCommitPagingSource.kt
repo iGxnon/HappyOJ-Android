@@ -8,15 +8,7 @@ class RepoCommitPagingSource(private val repoUrl: String) : BasePagingSource<Rep
 
     override suspend fun getData(page: Int): List<RepoCommit> {
         // repoUrl: http(s)://github.com/{owner}/repo(/)
-        val ids = repoUrl
-            .replace("https://", "")
-            .replace("http://", "")
-            .split("/")
-            .filterNot {
-                it.contains("github.com")
-            }.filterNot {
-                it.isEmpty()
-            }
+        val ids = Utils.parseRepoUrl(repoUrl)
         assert(ids.size == 2)
         return RetrofitHelper.repoService.getRepoCommits(ids[0], ids[1], page + 1, 25)
     }

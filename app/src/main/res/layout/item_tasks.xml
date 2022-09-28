@@ -1,85 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackgroundBorderless"
-    android:backgroundTint="?colorPrimary"
-    app:cardCornerRadius="1dp">
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:background="?android:attr/selectableItemBackground"
+        android:id="@+id/layout_content"
+        android:layout_weight="30"
+        android:layout_width="0dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvTitle"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:padding="15dp"
+            android:orientation="vertical"
+            android:layout_weight="30"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:padding="2dp"
-            android:textSize="16sp"
-            android:textColor="?colorOnPrimary"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivShortcut"
-            tools:text="Title" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvDesc"
+            <TextView
+                android:id="@+id/tv_title"
+                android:paddingVertical="5dp"
+                android:singleLine="true"
+                android:lines="1"
+                android:textSize="16sp"
+                android:textColor="?colorOnPrimary"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                tools:text="测试实验标题巴拉巴拉xxxxxxxxxxxxxx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:textColor="?colorOnPrimary"
+                android:maxLines="2"
+                tools:text="实验描述"
+                android:paddingVertical="3dp"
+                android:textSize="14sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:paddingVertical="3dp"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_update_time"
+                    android:singleLine="true"
+                    android:lines="1"
+                    android:maxLines="1"
+                    tools:text="2022-10-12"
+                    android:padding="2dp"
+                    android:textSize="13sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_last_days"
+                    android:singleLine="true"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:drawablePadding="3dp"
+                    app:drawableStartCompat="@drawable/ic_time_22"
+                    android:layout_marginStart="5dp"
+                    tools:text="剩12天"
+                    android:padding="2dp"
+                    android:textSize="13sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!--    layout_weight 从 0 到 15-->
+        <FrameLayout
+            android:id="@+id/frame_iv_task"
+            android:layout_weight="0"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvTitle"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:padding="2dp"
-            android:textSize="14sp"
-            android:textColor="?colorOnPrimary"
-            android:layout_marginTop="3dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            app:layout_constraintEnd_toStartOf="@+id/ivShortcut"
-            tools:text="Description" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tvDesc"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:padding="2dp"
-            android:textSize="12sp"
-            android:textColor="?colorOnPrimary"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDesc"
-            app:layout_constraintEnd_toStartOf="@+id/ivShortcut"
-            tools:text="2077-13-32" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_task"
+                android:layout_gravity="center"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="25dp"
+                android:contentDescription="@string/shortcutimage"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:shapeAppearance="@style/RoundStyle"
+                tools:srcCompat="@tools:sample/avatars" />
+
+        </FrameLayout>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivShortcut"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:contentDescription="@string/shortcutimage"
-            android:visibility="visible"
-            app:layout_constraintStart_toEndOf="@id/tvDesc"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:shapeAppearance="@style/RoundStyle"
-            tools:srcCompat="@tools:sample/avatars" />
+    <!--    layout_weight 从 25 到 4-->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_state"
+        app:rippleColor="@color/white"
+        android:layout_gravity="center"
+        app:cardElevation="8dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        app:cardBackgroundColor="?colorPrimaryVariant"
+        android:layout_marginVertical="9dp"
+        android:layout_weight="25"
+        app:shapeAppearanceOverlay="@style/LeftRoundStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--        alpha 从 1 到 0-->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_state"
+            android:alpha="1"
+            android:layout_gravity="center|start"
+            android:paddingVertical="6dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="6dp"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-</com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/tv_state_submit"
+                android:paddingVertical="2dp"
+                android:textColor="?colorOnPrimary"
+                android:singleLine="true"
+                android:lines="1"
+                tools:text="状态: 已提交"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
+            <TextView
+                android:id="@+id/tv_repo"
+                android:paddingVertical="2dp"
+                android:singleLine="true"
+                android:lines="1"
+                android:textColor="?colorOnPrimary"
+                tools:text="仓库: FormDSL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_state_comment"
+                android:singleLine="true"
+                android:lines="1"
+                android:paddingVertical="2dp"
+                android:textColor="?colorOnPrimary"
+                tools:text="评测: 未评测"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <!--        rotation 从 0 到 180-->
+        <ImageView
+            android:id="@+id/iv_drawer"
+            android:rotation="0"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center|end"
+            android:src="@drawable/ic_forward_24"
+            android:layout_width="24dp"
+            android:paddingHorizontal="4dp"
+            android:layout_height="80dp"
+            tools:ignore="ContentDescription" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

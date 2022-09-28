@@ -16,6 +16,7 @@ import cn.skygard.happyoj.domain.logic.UserManager
 import cn.skygard.happyoj.intent.state.*
 import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.intent.vm.TasksViewModel
+import cn.skygard.happyoj.view.activity.CommentActivity
 import cn.skygard.happyoj.view.activity.LabActivity
 import cn.skygard.happyoj.view.adapter.TasksPagingAdapter
 import kotlinx.coroutines.launch
@@ -24,9 +25,11 @@ class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>()
 
     private val parentViewModel by activityViewModels<MainViewModel>()
     private val tasksAdapter by lazyUnlock {
-        TasksPagingAdapter { item ->
+        TasksPagingAdapter(onClick = { item ->
             LabActivity.start(requireContext(), item)
-        }
+        }, onClickCard = { tid, title ->
+            CommentActivity.start(requireContext(), tid, title)
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

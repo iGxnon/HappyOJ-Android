@@ -1,10 +1,10 @@
 package cn.skygard.happyoj.intent.state
 
-import cn.skygard.happyoj.domain.model.SubmitsItem
+import cn.skygard.happyoj.repo.remote.model.Task
 
 data class SubmitsState(
     val fetchState: FetchState = FetchState.Fetched,
-    val submits: List<SubmitsItem> = emptyList()
+    val submits: List<Task.TaskSubject> = emptyList()
 )
 
 sealed class SubmitsAction {

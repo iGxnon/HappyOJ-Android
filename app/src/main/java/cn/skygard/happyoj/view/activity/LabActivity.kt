@@ -51,6 +51,9 @@ import com.google.android.material.transition.platform.MaterialFadeThrough
 
 class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
+    override val navigationBarColor: Int
+        get() = ContextCompat.getColor(this, R.color.prime_color)
+
     override val isCancelStatusBar: Boolean
         get() = true
 
@@ -135,6 +138,7 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                     else
                         fabMenu.hideMenu(true)
                     ValueAnimator.ofInt(fromDp, toDp).run {
+                        duration = 88L
                         interpolator = AccelerateDecelerateInterpolator()
                         addUpdateListener { v ->
                             tabLayout.setPadding(

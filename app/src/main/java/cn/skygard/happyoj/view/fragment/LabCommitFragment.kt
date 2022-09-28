@@ -87,13 +87,8 @@ class LabCommitFragment : BaseBindFragment<FragmentLabCommitBinding>() {
             observeEvent(this@LabCommitFragment) {
                 when (it) {
                     LabEvent.ScrollToTop -> {
-                        ValueAnimator.ofInt(binding.rvCommit.scrollY, 0).run {
-                            interpolator = AccelerateInterpolator()
-                            addUpdateListener { anim ->
-                                binding.rvCommit.scrollY = anim.animatedValue as Int
-                            }
-                            start()
-                        }
+                        Log.d("LabCommitFragment", "ScrollToTop")
+                        binding.rvCommit.scrollToPosition(0)
                     }
                     else -> {}
                 }

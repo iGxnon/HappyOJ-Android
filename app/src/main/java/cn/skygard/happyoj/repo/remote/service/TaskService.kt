@@ -43,4 +43,9 @@ interface TaskService {
         @Query("page") page: Int
     ): Result<TaskCommits>
 
+    @GET("task/comment")
+    suspend fun getTaskComment(
+        @Query("commit_id") cid: Long,
+    ): Result<Comments>
+
 }

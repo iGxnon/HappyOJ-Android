@@ -18,7 +18,7 @@ class SearchFragment : BaseBindFragment<FragmentSearchBinding>() {
 
     private val viewModel by activityViewModels<SearchViewModel>()
     private val rvAdapter by lazyUnlock {
-        TasksRvAdapter { item, headerView, transitionNameHeader, descView, transitionNameDesc ->
+        TasksRvAdapter { item ->
             LabActivity.start(requireContext(), item)
         }
     }
