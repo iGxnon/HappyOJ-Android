@@ -33,28 +33,14 @@ import retrofit2.HttpException
 class LabViewModel(private val taskItem: Task.TaskSubject)
     : BaseViewModel<LabState, LabAction, LabEvent>(LabState()) {
 
-    init {
+    private var pagingData: Flow<PagingData<RepoCommit>>? = null
+
+    private fun initPagingData() {
+        // 初始化 RepoCommit 的 pagingData
         viewModelScope.launch {
-            val url = AppDatabase.INSTANCE.taskDao().getRepoUrl(taskItem.id)
-            var pagingData: Flow<PagingData<RepoCommit>>? = null
-            if (url != null && url != "") {
-                pagingData = Pager(
-                    config = PagingConfig(
-                        pageSize = 20,
-                        enablePlaceholders = false,
-                        initialLoadSize = 20,
-                    ),
-                    pagingSourceFactory = {
-                        RepoCommitPagingSource(url)
-                    }
-                ).flow.catch { e ->
-                    Result.onError(e.cause)
-                }.cachedIn(viewModelScope)
-            } else {
+            try {
                 val commit = RetrofitHelper.taskService.getTaskCommit(taskItem.id)
                 if (commit.ok) {
-                    AppDatabase.INSTANCE.taskDao()
-                        .updateRepoUrl(tid = taskItem.id, url = commit.data.commitIndex.repoUrl)
                     pagingData = Pager(
                         config = PagingConfig(
                             pageSize = 20,
@@ -68,7 +54,7 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
                         Result.onError(e.cause)
                     }.cachedIn(viewModelScope)
                 }
-            }
+            } catch (ignore: Exception) {}
             pagingData?.run {
                 collectLatest { data ->
                     mViewStates.setState {
@@ -76,11 +62,13 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
                     }
                 }
             }
-            if (pagingData == null) {
-                Toast.makeText(BaseApp.appContext, "请提交仓库后查看", Toast.LENGTH_SHORT).show()
-            }
         }
     }
+
+    init {
+        initPagingData()
+    }
+
 
     override fun dispatch(action: LabAction) {
         Log.d("LabViewModel", "received an action $action")
@@ -97,6 +85,16 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
             is LabAction.ScrollToTop -> mViewEvents.triggerEvent(LabEvent.ScrollToTop)
             is LabAction.FetchContent -> fetchContent(action.noCache)
             is LabAction.SubmitRepoUrl -> submitRepoUrl(action.url, action.desc)
+            is LabAction.RepoCommitRefresh -> {
+                if (pagingData == null) {
+                    initPagingData()
+                }
+                if (pagingData == null) {
+                    mViewEvents.triggerEvent(LabEvent.TriggerRefreshRepoCommit(false))
+                } else {
+                    mViewEvents.triggerEvent(LabEvent.TriggerRefreshRepoCommit(true))
+                }
+            }
         }
     }
 
@@ -106,8 +104,11 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
                 RetrofitHelper.taskService.getTaskCommit(taskItem.id).let { commit ->
                     if (commit.ok) {
                         if (RetrofitHelper.taskService
-                                .patchRepo(cid = commit.data.commitIndex.id,
-                                    repoUrl = url, description = desc).ok) {
+                                .patchRepo(
+                                    cid = commit.data.commitIndex.id,
+                                    repoUrl = url,
+                                    description = desc
+                                ).ok) {
                             mViewEvents.triggerEvent(LabEvent.SubmitSuccess)
                         }
                     } else {
@@ -118,12 +119,24 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
                         }
                     }
                 }
-                AppDatabase.INSTANCE.taskDao().updateRepoUrl(tid = taskItem.id, url = url)
             } catch (e: Exception) {
                 if (e is HttpException) {
                     Result.onError(e)
                 }
-                mViewEvents.triggerEvent(LabEvent.SubmitFailed)
+                try {
+                    if (RetrofitHelper.taskService
+                            .submitRepo(tid = taskItem.id,
+                                repoUrl = url, description = desc).ok) {
+                        mViewEvents.triggerEvent(LabEvent.SubmitSuccess)
+                    } else {
+                        mViewEvents.triggerEvent(LabEvent.SubmitFailed)
+                    }
+                } catch (e: Exception) {
+                    if (e is HttpException) {
+                        Result.onError(e)
+                    }
+                    mViewEvents.triggerEvent(LabEvent.SubmitFailed)
+                }
             }
         }
     }
@@ -170,8 +183,6 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
                         imageUrl = it.imageUrl,
                         mdContent = it.mdText!!,
                         date = it.updateTime,
-                        repoUrl = "",
-                        repoType = "",
                     ))
                 }
             }
@@ -182,14 +193,18 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
     }
 
     private suspend fun fetchContentOffline(): Boolean {
-        val content = AppDatabase.INSTANCE.taskDao().getContent(taskItem.id)?:return false
-        mViewStates.setState {
-            copy(
-                contentFetchState = FetchState.Fetched,
-                mdContent = content
-            )
+        try {
+            val content = AppDatabase.INSTANCE.taskDao().getContent(taskItem.id)?:return false
+            mViewStates.setState {
+                copy(
+                    contentFetchState = FetchState.Fetched,
+                    mdContent = content
+                )
+            }
+            return true
+        } catch (e: Exception) {
+            return false
         }
-        return true
     }
 
 }

@@ -2,7 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?colorPrimary"
+    android:background="?colorPrimaryVariant"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.activity.LabActivity">
@@ -46,22 +46,6 @@
                 android:layout_height="match_parent"
                 tools:ignore="ContentDescription" />
 
-            <TextView
-                android:id="@+id/tv_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="3dp"
-                android:ellipsize="end"
-                android:lines="1"
-                android:maxLines="1"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="13dp"
-                android:singleLine="true"
-                android:textColor="?colorOnPrimary"
-                app:layout_collapseMode="parallax"
-                tools:text="online" />
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_marginTop="30dp"
@@ -76,7 +60,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:background="?colorPrimary"
+        android:background="?colorPrimaryVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
@@ -93,8 +77,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_marginTop="5dp"
-                    app:cardBackgroundColor="?colorPrimaryVariant"
+                    android:layout_marginTop="15dp"
+                    app:cardBackgroundColor="?colorPrimary"
                     app:cardCornerRadius="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -124,6 +108,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
+                                android:id="@+id/tv_username"
                                 android:textSize="15sp"
                                 android:paddingVertical="8dp"
                                 android:paddingStart="15dp"
@@ -146,7 +131,7 @@
 
                         <View
                             android:layout_marginHorizontal="15dp"
-                            android:background="?colorPrimary"
+                            android:background="?colorPrimaryVariant"
                             android:layout_width="match_parent"
                             android:layout_height="1dp" />
 
@@ -159,12 +144,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
+                                android:id="@+id/tv_name"
                                 android:textSize="15sp"
                                 android:paddingVertical="8dp"
                                 android:paddingStart="15dp"
                                 android:textStyle="bold"
                                 android:textColor="?colorOnPrimary"
-                                tools:text="你所热爱的，就是你的生活"
+                                tools:text="Cherry"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 tools:ignore="RtlSymmetry" />
@@ -172,7 +158,7 @@
                             <TextView
                                 android:textSize="14sp"
                                 android:paddingStart="15dp"
-                                android:text="Github"
+                                android:text="姓名"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 tools:ignore="HardcodedText,RtlSymmetry" />
@@ -181,7 +167,79 @@
 
                         <View
                             android:layout_marginHorizontal="15dp"
-                            android:background="?colorPrimary"
+                            android:background="?colorPrimaryVariant"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" />
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/account_stu_id"
+                            android:background="?attr/selectableItemBackground"
+                            android:paddingVertical="9dp"
+                            android:orientation="vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/tv_stu_id"
+                                android:textSize="15sp"
+                                android:paddingVertical="8dp"
+                                android:paddingStart="15dp"
+                                android:textStyle="bold"
+                                android:textColor="?colorOnPrimary"
+                                tools:text="114514"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:ignore="RtlSymmetry" />
+
+                            <TextView
+                                android:textSize="14sp"
+                                android:paddingStart="15dp"
+                                android:text="学号"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:ignore="HardcodedText,RtlSymmetry" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <View
+                            android:layout_marginHorizontal="15dp"
+                            android:background="?colorPrimaryVariant"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp" />
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/account_email"
+                            android:background="?attr/selectableItemBackground"
+                            android:paddingVertical="9dp"
+                            android:orientation="vertical"
+                            android:layout_marginTop="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/tv_email"
+                                android:textSize="15sp"
+                                android:paddingVertical="8dp"
+                                android:paddingStart="15dp"
+                                android:textStyle="bold"
+                                android:textColor="?colorOnPrimary"
+                                tools:text="114514@xiabeize.com"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:ignore="RtlSymmetry" />
+
+                            <TextView
+                                android:textSize="14sp"
+                                android:paddingStart="15dp"
+                                android:text="邮箱"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:ignore="HardcodedText,RtlSymmetry" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <View
+                            android:layout_marginHorizontal="15dp"
+                            android:background="?colorPrimaryVariant"
                             android:layout_width="match_parent"
                             android:layout_height="1dp" />
 
@@ -191,7 +249,7 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_marginTop="15dp"
-                    app:cardBackgroundColor="?colorPrimaryVariant"
+                    app:cardBackgroundColor="?colorPrimary"
                     app:cardCornerRadius="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -262,7 +320,7 @@
                         <View
                             android:layout_marginStart="50dp"
                             android:layout_marginEnd="15dp"
-                            android:background="?colorPrimary"
+                            android:background="?colorPrimaryVariant"
                             android:layout_width="match_parent"
                             android:layout_height="1dp" />
 

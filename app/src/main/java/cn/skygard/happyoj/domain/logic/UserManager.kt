@@ -92,6 +92,8 @@ object UserManager {
             .putBoolean("is_login", false)
             .putString("email", "")
             .putString("name", "")
+            .putString("username", "")
+            .putInt("stu_id", -1)
             .putString("id_token", "")
             .putString("refresh_token", "")
             .putString("access_token", "")

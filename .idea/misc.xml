@@ -51,6 +51,7 @@
         <entry key="app/src/main/res/drawable/ic_tasks_24.xml" value="0.256" />
         <entry key="app/src/main/res/drawable/ic_time_22.xml" value="0.245" />
         <entry key="app/src/main/res/drawable/ic_tupianjiazaishibai03.xml" value="0.2025" />
+        <entry key="app/src/main/res/drawable/ic_upload_24.xml" value="0.245" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_comment.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/activity_crash.xml" value="0.32708333333333334" />
@@ -58,7 +59,7 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.32065217391304346" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.3302083333333333" />
-        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_profile.xml" value="0.45" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.32708333333333334" />
         <entry key="app/src/main/res/layout/app_bar_main.xml" value="0.1640625" />

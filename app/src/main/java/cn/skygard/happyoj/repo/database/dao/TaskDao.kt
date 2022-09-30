@@ -12,16 +12,16 @@ interface TaskDao {
     @Delete
     suspend fun delete(userEntity: TaskEntity)
 
-    @Query("SELECT md_content FROM t_tasks WHERE tid = :tid")
+    @Query("SELECT md_content FROM t_tasks WHERE rowid = :tid")
     suspend fun getContent(tid: Long): String?
 
-    @Query("SELECT repo_url FROM t_tasks WHERE tid = :tid")
-    suspend fun getRepoUrl(tid: Long): String?
+    @Query("SELECT rowid, title, summary, image_url, md_content, date FROM t_tasks WHERE md_content MATCH :content")
+    suspend fun matchContent(content: String): List<TaskEntity>?
 
-    @Query("SELECT repo_type FROM t_tasks WHERE tid = :tid")
-    suspend fun getRepoType(tid: Long): String?
+    @Query("SELECT rowid, title, summary, image_url, md_content, date FROM t_tasks WHERE title LIKE :title")
+    suspend fun matchTitle(title: String): List<TaskEntity>?
 
-    @Query("UPDATE t_tasks SET repo_url = :url WHERE tid = :tid")
-    suspend fun updateRepoUrl(tid: Long, url: String?)
+    @Query("SELECT rowid, title, summary, image_url, md_content, date FROM t_tasks WHERE summary LIKE :summary")
+    suspend fun matchSummary(summary: String): List<TaskEntity>?
 
 }

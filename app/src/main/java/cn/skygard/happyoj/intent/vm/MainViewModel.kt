@@ -38,7 +38,9 @@ class MainViewModel :
                 RetrofitHelper.userService.getInfo().run {
                     if (this.ok) {
                         defaultSp.edit()
-                            .putString("name", this.data.userSubject.username)
+                            .putString("username", this.data.userSubject.username)
+                            .putString("name", this.data.userSubject.name)
+                            .putInt("stu_id", this.data.userSubject.stuId)
                             .putString("avatar_url", this.data.userSubject.picture)
                             .putString("email", this.data.userSubject.email)
                             .apply()

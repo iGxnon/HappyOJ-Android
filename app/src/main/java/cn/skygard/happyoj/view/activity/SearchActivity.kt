@@ -7,18 +7,15 @@ import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.util.Log
-import android.util.Pair
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import cn.skygard.happyoj.R
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.core.view.allViews
 import androidx.core.widget.addTextChangedListener
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.invisible
@@ -59,33 +56,12 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
         initAnim()
         initView()
         initViewState()
-        initViewEvents()
     }
 
     private fun initViewState() {
         viewModel.viewStates.run {
             observeState(this@SearchActivity, SearchState::searchText) {
                 binding.etInput.text.replace(0, binding.etInput.text.length, it)
-            }
-        }
-    }
-
-    private fun initViewEvents() {
-        viewModel.viewEvents.observeEvent(this) {
-            when (it) {
-                is SearchEvent.ReplaceSearch -> {
-                    replaceFragment(R.id.frag_container) {
-                        SearchFragment.newInstance()
-                    }
-                }
-                is SearchEvent.ReplaceHistory -> {
-                    replaceFragment(R.id.frag_container) {
-                        SearchHistoryFragment.newInstance()
-                    }
-                }
-                is SearchEvent.StartSearch -> {
-                    viewModel.dispatch(SearchAction.SearchFor(binding.etInput.text.toString()))
-                }
             }
         }
     }
@@ -122,6 +98,7 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
                     replaceFragment(R.id.frag_container) {
                         SearchFragment.newInstance()
                     }
+                    viewModel.dispatch(SearchAction.QuickSearchFor(it.toString()))
                 } else if (it?.isNotEmpty() == true) {
                     viewModel.dispatch(SearchAction.QuickSearchFor(it.toString()))
                 } else {
@@ -129,10 +106,12 @@ class SearchActivity : BaseVmBindActivity<SearchViewModel, ActivitySearchBinding
                     replaceFragment(R.id.frag_container) {
                         SearchHistoryFragment.newInstance()
                     }
+                    viewModel.dispatch(SearchAction.SetSearchText(""))
                 }
             }
             ivCleaner.setOnClickListener {
                 etInput.text.clear()
+                viewModel.dispatch(SearchAction.SetSearchText(""))
             }
 
             etInput.setOnEditorActionListener { tv, actionId, _ ->

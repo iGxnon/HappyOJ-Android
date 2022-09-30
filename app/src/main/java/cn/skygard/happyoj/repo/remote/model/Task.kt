@@ -23,7 +23,7 @@ data class Task(
         @SerializedName("image_url")
         val imageUrl: String,
         @SerializedName("md_text")
-        val mdText: String? = null,
+        var mdText: String? = null,
         @SerializedName("state")
         val state: Int = 0,
         @SerializedName("summary")

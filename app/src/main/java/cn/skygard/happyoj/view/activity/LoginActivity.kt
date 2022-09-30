@@ -68,7 +68,12 @@ class LoginActivity : BaseVmBindActivity<LoginViewModel, ActivityLoginBinding>()
                         "登录成功"
                     }
                     is LoginEvent.RegisterFailed -> "注册失败"
-                    is LoginEvent.RegisterSuccess -> "注册成功"
+                    is LoginEvent.RegisterSuccess -> {
+                        replaceFragment(R.id.frag_container) {
+                            LoginFragment.newInstance()
+                        }
+                        "注册成功"
+                    }
                     is LoginEvent.MailSuccess -> "发送成功"
                     is LoginEvent.MailFailed -> "发送失败"
                 }

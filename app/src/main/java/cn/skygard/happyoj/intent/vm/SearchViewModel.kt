@@ -1,21 +1,24 @@
 package cn.skygard.happyoj.intent.vm
 
 import android.util.Log
+import androidx.lifecycle.viewModelScope
 import cn.skygard.common.base.ext.defaultSp
 import cn.skygard.common.base.ext.lazyUnlock
 import cn.skygard.common.mvi.ext.setState
-import cn.skygard.common.mvi.ext.triggerEvents
 import cn.skygard.common.mvi.vm.BaseViewModel
 import cn.skygard.happyoj.intent.state.SearchAction
 import cn.skygard.happyoj.intent.state.SearchEvent
 import cn.skygard.happyoj.intent.state.SearchState
+import cn.skygard.happyoj.repo.database.AppDatabase
+import cn.skygard.happyoj.repo.remote.model.Task
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlin.collections.ArrayList
 
 // 这是一个共享的 ViewModel，被 SearchActivity, SearchHistoryFragment, SearchFragment 共享
 class SearchViewModel : BaseViewModel<SearchState, SearchAction, SearchEvent>(SearchState()) {
 
-    private val quickSearchJob: Job? = null
+    private var quickSearchJob: Job? = null
 
     private val histories by lazyUnlock {
         ArrayList(defaultSp.getStringSet("history", emptySet())?.toList()?: emptyList())
@@ -25,17 +28,17 @@ class SearchViewModel : BaseViewModel<SearchState, SearchAction, SearchEvent>(Se
         while (this.size >= 15) {
             this.removeAt(0)
         }
-        this.add(text)
+        if (!this.contains(text)) {
+            this.add(text)
+        }
     }
 
     override fun dispatch(action: SearchAction) {
         Log.d("SearchViewModel", "received an action $action")
         when (action) {
             is SearchAction.SearchFor -> searchFor(action.text)
-            is SearchAction.UseHistory ->
-                mViewEvents.triggerEvents(SearchEvent.ReplaceSearch, SearchEvent.StartSearch) // 会按顺序触发
             is SearchAction.SetSearchText -> mViewStates.setState {
-                    copy(searchText = action.text)
+                copy(searchText = action.text)
             }
             is SearchAction.QuickSearchFor -> quickSearchFor(action.text)
             is SearchAction.GetHistory -> getHistory()
@@ -54,10 +57,29 @@ class SearchViewModel : BaseViewModel<SearchState, SearchAction, SearchEvent>(Se
         defaultSp.edit()
             .putStringSet("history", histories.toSet())
             .apply()
+
     }
+
 
     private fun quickSearchFor(text: String) {
         quickSearchJob?.cancel()
+        quickSearchJob = viewModelScope.launch {
+            AppDatabase.INSTANCE.taskDao().matchTitle("%${text}%")?.let { tasks ->
+                Log.d("SearchViewModel", tasks.toString())
+                mViewStates.setState {
+                    copy(result = tasks.map { t ->
+                        AppDatabase.INSTANCE.taskDao()
+                        Task.TaskSubject(
+                            id = t.tid,
+                            title = t.title,
+                            summary = t.summary,
+                            updateTime =  t.date,
+                            imageUrl = t.imageUrl
+                        )
+                    })
+                }
+            }
+        }
     }
 
     private fun deleteHistory(text: String) {

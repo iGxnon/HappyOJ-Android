@@ -3,7 +3,9 @@ package cn.skygard.happyoj.repo.remote.service
 import cn.skygard.happyoj.repo.remote.model.Login
 import cn.skygard.happyoj.repo.remote.model.Result
 import cn.skygard.happyoj.repo.remote.model.User
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.http.*
 import java.io.File
 
@@ -36,6 +38,12 @@ interface UserService {
     @GET("user/profile")
     suspend fun getInfo(): Result<User>
 
+    @PATCH("user/avatar")
+    @Multipart
+    suspend fun setAvatar(
+        @Part imgFile: MultipartBody.Part
+    ): Result<Any>
+
 
 //
 //    @POST("user/password")
@@ -61,11 +69,7 @@ interface UserService {
 //        @Field("password") password: String
 //    ): Result<User>
 //
-//    @POST("user/avatar")
-//    @Multipart
-//    suspend fun setAvatar(
-//        @Part("file") imgFile: RequestBody
-//    ): Result<Any>
+
 //
 //    @GET("user/bind/github")
 //    suspend fun bindGithub(

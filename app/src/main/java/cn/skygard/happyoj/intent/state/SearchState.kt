@@ -17,14 +17,9 @@ data class SearchState(
 sealed class SearchAction {
     object GetHistory : SearchAction()
     data class DeleteHistory(val text: String) : SearchAction()
-    data class UseHistory(val text: String) : SearchAction()
     data class SetSearchText(val text: String) : SearchAction()
     data class SearchFor(val text: String) : SearchAction()
     data class QuickSearchFor(val text: String) : SearchAction()
 }
 
-sealed class SearchEvent {
-    object ReplaceSearch : SearchEvent()
-    object ReplaceHistory: SearchEvent()
-    object StartSearch : SearchEvent()
-}
+sealed class SearchEvent

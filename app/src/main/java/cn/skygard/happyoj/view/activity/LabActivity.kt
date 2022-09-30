@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.adapter.BaseVPAdapter
 import cn.skygard.common.base.ext.color
@@ -189,6 +190,18 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 }
             }
 
+            vp2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    tabLayout.setPadding(
+                        tabLayout.paddingLeft,
+                        0,
+                        tabLayout.paddingRight,
+                        tabLayout.paddingBottom
+                    )
+                    super.onPageSelected(position)
+                }
+            })
+
             TabLayoutMediator(tabLayout, vp2, true, true) { tab, pos ->
                 tab.text = when (pos) {
                     Pages.LAB.index -> Pages.LAB.title
@@ -267,30 +280,21 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
     private fun showSubmitRepoUrl() {
         val dialogBinding = DialogRepoSubmitBinding.inflate(layoutInflater)
-        CoroutineScope(Dispatchers.IO).launch {
-            val hasSubmit = AppDatabase.INSTANCE.taskDao().getRepoUrl(taskItem.id) != ""
-            withContext(Dispatchers.Main) {
-                val title = if (hasSubmit) {
-                    "修改仓库"
-                } else {
-                    "提交仓库"
-                }
-                val dialog = MaterialAlertDialogBuilder(this@LabActivity)
-                    .setTitle(title)
-                    .setView(dialogBinding.root)
-                    .setPositiveButton(if (hasSubmit) "提交" else "修改") { _, _ ->
-                        val repoUrl = dialogBinding.etRepoUrl.text.toString()
-                        val desc = dialogBinding.etDesc.text.toString()
-                        Log.d("LabActivity", "RepoUrl: $repoUrl")
-                        viewModel.dispatch(LabAction.SubmitRepoUrl(repoUrl, desc))
-                    }
-                    .setNegativeButton("取消"){_, _ -> }.create()
-                dialog.show()
-                val onColor = ContextCompat.getColor(this@LabActivity, R.color.prim_on_color)
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(onColor)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(onColor)
+        val title = "上传仓库"
+        val dialog = MaterialAlertDialogBuilder(this@LabActivity)
+            .setTitle(title)
+            .setView(dialogBinding.root)
+            .setPositiveButton("提交") { _, _ ->
+                val repoUrl = dialogBinding.etRepoUrl.text.toString()
+                val desc = dialogBinding.etDesc.text.toString()
+                Log.d("LabActivity", "RepoUrl: $repoUrl")
+                viewModel.dispatch(LabAction.SubmitRepoUrl(repoUrl, desc))
             }
-        }
+            .setNegativeButton("取消"){_, _ -> }.create()
+        dialog.show()
+        val onColor = ContextCompat.getColor(this@LabActivity, R.color.prim_on_color)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(onColor)
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(onColor)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

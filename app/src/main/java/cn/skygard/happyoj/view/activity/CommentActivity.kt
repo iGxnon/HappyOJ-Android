@@ -23,6 +23,7 @@ import cn.skygard.happyoj.intent.vm.CommentViewModel
 import cn.skygard.happyoj.intent.vm.LabViewModel
 import cn.skygard.happyoj.view.adapter.CheckpointsRvAdapter
 import cn.skygard.happyoj.view.adapter.CommentRvAdapter
+import cn.skygard.happyoj.view.adapter.SubmitCheckpointsRvAdapter
 
 class CommentActivity : BaseVmBindActivity<CommentViewModel, ActivityCommentBinding>() {
 
@@ -59,7 +60,7 @@ class CommentActivity : BaseVmBindActivity<CommentViewModel, ActivityCommentBind
     }
 
     private val checkpointsRvAdapter by lazy {
-        CheckpointsRvAdapter()
+        SubmitCheckpointsRvAdapter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -20,7 +20,6 @@ class SearchHistoryFragment : BaseBindFragment<FragmentSearchHistoryBinding>() {
     private val searchHistoryRvAdapter by lazyUnlock {
         SearchHistoryRvAdapter(onClick = {
             viewModel.dispatch(SearchAction.SetSearchText(this))
-            viewModel.dispatch(SearchAction.UseHistory(this))
         }, onDelete =  {
             viewModel.dispatch(SearchAction.DeleteHistory(it))
             viewModel.dispatch(SearchAction.GetHistory)

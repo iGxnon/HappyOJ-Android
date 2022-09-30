@@ -4,14 +4,19 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import cn.skygard.common.mvi.ext.setState
 import cn.skygard.common.mvi.vm.BaseViewModel
+import cn.skygard.happyoj.domain.model.SubmitLabel
+import cn.skygard.happyoj.domain.model.SubmitsItem
 import cn.skygard.happyoj.intent.state.CommentAction
 import cn.skygard.happyoj.intent.state.CommentEvent
 import cn.skygard.happyoj.intent.state.CommentState
 import cn.skygard.happyoj.intent.state.FetchState
 import cn.skygard.happyoj.repo.remote.RetrofitHelper
+import cn.skygard.happyoj.repo.remote.model.Comments
 import cn.skygard.happyoj.repo.remote.model.Result
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.util.*
 
 class CommentViewModel(val taskId: Long) :
     BaseViewModel<CommentState, CommentAction, CommentEvent>(CommentState()) {

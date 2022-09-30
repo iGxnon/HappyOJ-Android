@@ -19,6 +19,7 @@ data class Result<T>(
         private val gson = Gson()
         fun onError(e: Throwable?) {
             if (e is HttpException) {
+                Log.d("Result", e.message.toString())
                 Log.d("Result", e.response()?.errorBody()?.string().toString())
             }
         }

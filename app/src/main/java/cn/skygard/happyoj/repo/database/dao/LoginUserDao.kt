@@ -19,12 +19,12 @@ interface LoginUserDao {
     suspend fun deleteAt(uid: Long)
 
     @Query("SELECT id_token FROM t_login_users WHERE uid = :uid")
-    suspend fun getIdToken(uid: Int): String?
+    suspend fun getIdToken(uid: Long): String?
 
     @Query("SELECT access_token FROM t_login_users WHERE uid = :uid")
-    suspend fun getAccessToken(uid: Int): String?
+    suspend fun getAccessToken(uid: Long): String?
 
     @Query("SELECT refresh_token FROM t_login_users WHERE uid = :uid")
-    suspend fun getRefreshToken(uid: Int): String?
+    suspend fun getRefreshToken(uid: Long): String?
 
 }

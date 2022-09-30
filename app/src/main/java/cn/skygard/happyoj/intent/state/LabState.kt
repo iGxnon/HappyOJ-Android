@@ -14,6 +14,7 @@ data class LabState(
 sealed class LabAction{
     object HideMenu : LabAction()
     object ShowMenu : LabAction()
+    object RepoCommitRefresh : LabAction()
     data class ChangePage(val page: Pages) : LabAction()
     data class FetchContent(val noCache: Boolean = false) : LabAction()
     object ScrollToTop : LabAction()
@@ -24,6 +25,7 @@ sealed class LabEvent {
     object ScrollToTop : LabEvent()
     object SubmitSuccess: LabEvent()
     object SubmitFailed: LabEvent()
+    data class TriggerRefreshRepoCommit(val isRefresh: Boolean) : LabEvent()
 }
 
 enum class Pages(val title: String, val index: Int){

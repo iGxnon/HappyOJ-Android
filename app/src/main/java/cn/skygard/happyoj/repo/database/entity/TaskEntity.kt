@@ -1,13 +1,13 @@
 package cn.skygard.happyoj.repo.database.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 // 本地缓存的任务列表
 @Entity(tableName = "t_tasks")
+@Fts4(tokenizer = FtsOptions.TOKENIZER_ICU) // 开启全文索引
 data class TaskEntity(
     @PrimaryKey
+    @ColumnInfo(name = "rowid")
     val tid: Long,  // 来自后端
     @ColumnInfo(name = "title")
     val title: String,
@@ -19,8 +19,4 @@ data class TaskEntity(
     val mdContent: String,
     @ColumnInfo(name = "date")
     val date: String,
-    @ColumnInfo(name = "repo_url", defaultValue = "")
-    val repoUrl: String,
-    @ColumnInfo(name = "repo_type", defaultValue = "github")
-    val repoType: String
 )

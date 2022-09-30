@@ -1,7 +1,8 @@
 package cn.skygard.happyoj.repo.pagingsource
 
-import android.util.Log
 import cn.skygard.common.base.adapter.BasePagingSource
+import cn.skygard.happyoj.repo.database.AppDatabase
+import cn.skygard.happyoj.repo.database.entity.TaskEntity
 import cn.skygard.happyoj.repo.remote.RetrofitHelper
 import cn.skygard.happyoj.repo.remote.model.Task
 
@@ -28,7 +29,18 @@ class TasksPagingSource : BasePagingSource<Task.TaskSubject>() {
             val detail = RetrofitHelper.taskService.getTaskDetail(task.id)
             if (detail.ok) {
                 task.deadline = detail.data.taskSubject.deadline
+                task.mdText = detail.data.taskSubject.mdText
                 task.createTime = detail.data.taskSubject.createTime
+            }
+            if (AppDatabase.INSTANCE.taskDao().getContent(task.id) == null) {
+                AppDatabase.INSTANCE.taskDao().insert(TaskEntity(
+                    tid = task.id,
+                    title = task.title,
+                    summary = task.summary,
+                    imageUrl = task.imageUrl,
+                    mdContent = task.mdText!!,
+                    date = task.updateTime,
+                ))
             }
         }
         return tasks

@@ -1,11 +1,9 @@
 package cn.skygard.happyoj.view.fragment
 
-import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import androidx.fragment.app.activityViewModels
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -43,7 +41,7 @@ class LabCommitFragment : BaseBindFragment<FragmentLabCommitBinding>() {
                 adapter = commitAdapter
             }
             srlCommit.setOnRefreshListener {
-                commitAdapter.refresh()
+                viewModel.dispatch(LabAction.RepoCommitRefresh)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 rvCommit.setOnScrollChangeListener {
@@ -86,9 +84,17 @@ class LabCommitFragment : BaseBindFragment<FragmentLabCommitBinding>() {
         viewModel.viewEvents.run {
             observeEvent(this@LabCommitFragment) {
                 when (it) {
-                    LabEvent.ScrollToTop -> {
+                    is LabEvent.ScrollToTop -> {
                         Log.d("LabCommitFragment", "ScrollToTop")
                         binding.rvCommit.scrollToPosition(0)
+                    }
+                    is LabEvent.TriggerRefreshRepoCommit -> {
+                        if (it.isRefresh) {
+                            commitAdapter.refresh()
+                        } else {
+                            "请上传仓库".toast()
+                            binding.srlCommit.isRefreshing = false
+                        }
                     }
                     else -> {}
                 }

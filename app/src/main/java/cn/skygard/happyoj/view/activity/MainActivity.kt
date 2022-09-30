@@ -54,6 +54,9 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
         window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
         val firstStart = intent.getBooleanExtra("firstStart", true)
+        if (!UserManager.checkLogin()) {
+            LoginActivity.start(this)
+        }
         initView(firstStart)
         initViewEvents()
     }
@@ -243,15 +246,15 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                         val profileName = findViewById<TextView>(R.id.profileName)
                         val email = findViewById<TextView>(R.id.email)
                         val user = User.fromSp()
-                        profileName.text = user.name
+                        profileName.text = user.username
                         email.text = user.email
                         Glide.with(this@MainActivity)
                             .load(user.avatarUrl)
-                            .apply(RequestOptions().error(R.drawable.err_avatar))
+                            .error(R.drawable.err_avatar)
                             .into(sivProfile)
                         Glide.with(this@MainActivity)
                             .load(user.avatarUrl)
-                            .apply(RequestOptions().error(R.drawable.err_avatar))
+                            .error(R.drawable.err_avatar)
                             .into(binding.ivProfileOpen)
                     }
                 }
