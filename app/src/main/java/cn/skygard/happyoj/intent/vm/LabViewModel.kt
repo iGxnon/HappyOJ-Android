@@ -8,6 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import cn.skygard.common.base.BaseApp
+import cn.skygard.common.base.ext.defaultSp
 import cn.skygard.common.mvi.ext.setState
 import cn.skygard.common.mvi.ext.triggerEvent
 import cn.skygard.common.mvi.vm.BaseViewModel
@@ -95,6 +96,39 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
                     mViewEvents.triggerEvent(LabEvent.TriggerRefreshRepoCommit(true))
                 }
             }
+            is LabAction.EditFavor -> editFavor(action.tid)
+            is LabAction.RefreshFavorState -> refreshFavorState(action.tid)
+        }
+    }
+
+    private fun refreshFavorState(tid: Long) {
+        viewModelScope.launch {
+            val favors = defaultSp.getStringSet("favors", emptySet())?: emptySet()
+            if (favors.contains(tid.toString())) {
+                mViewStates.setState {
+                    copy(favorState = true)
+                }
+            } else {
+                mViewStates.setState {
+                    copy(favorState = false)
+                }
+            }
+        }
+    }
+
+    private fun editFavor(tid: Long) {
+        viewModelScope.launch {
+            val favors = defaultSp.getStringSet("favors", emptySet())?: emptySet()
+            favors.toMutableSet().let {
+                if (it.contains(tid.toString())) {
+                    it.remove(tid.toString())
+                    defaultSp.edit().putStringSet("favors", it).apply()
+                } else {
+                    it.add(tid.toString())
+                    defaultSp.edit().putStringSet("favors", it).apply()
+                }
+            }
+            refreshFavorState(tid)
         }
     }
 
@@ -183,6 +217,7 @@ class LabViewModel(private val taskItem: Task.TaskSubject)
                         imageUrl = it.imageUrl,
                         mdContent = it.mdText!!,
                         date = it.updateTime,
+                        deadline = it.deadline!!,
                     ))
                 }
             }

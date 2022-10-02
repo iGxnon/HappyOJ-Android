@@ -16,16 +16,20 @@ import android.transition.ChangeImageTransform
 import android.transition.TransitionSet
 import android.util.Log
 import android.util.Pair
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
+import android.widget.ImageView
 import android.widget.RadioButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import androidx.lifecycle.lifecycleScope
+import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.SP_DAY_NIGHT_MODE
 import cn.skygard.common.base.ext.SP_DAY_NIGHT_PREFERENCE
 import cn.skygard.common.base.ext.defaultSp
@@ -39,18 +43,20 @@ import cn.skygard.happyoj.domain.model.User
 import cn.skygard.happyoj.repo.remote.RetrofitHelper
 import cn.skygard.happyoj.repo.remote.model.Result
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.dialog.MaterialDialogs
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
 import com.google.android.material.transition.platform.MaterialFadeThrough
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.wanglu.photoviewerlibrary.PhotoViewer
+import com.wanglu.photoviewerlibrary.photoview.PhotoView
+import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.lang.Error
 import java.nio.charset.StandardCharsets
 import kotlin.system.exitProcess
 
@@ -60,29 +66,41 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
         get() = true
 
     private val mAvatar = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
-        contentResolver.openInputStream(it)?.readBytes()?.let { bytes ->
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val result = RetrofitHelper.userService.setAvatar(
-                        MultipartBody.Part.createFormData(
-                            "file", "avatar.jpeg", RequestBody.create(
-                            MediaType.get("image/jpeg"),
-                            bytes
-                        ))
-                    )
-                    Log.d("ProfileActivity", result.message)
-                } catch (e: Exception) {
-                    Result.onError(e)
+        try {
+            contentResolver.openInputStream(it)?.readBytes()?.let { bytes ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val result = RetrofitHelper.userService.setAvatar(
+                            MultipartBody.Part.createFormData(
+                                "file", "avatar.jpeg", RequestBody.create(
+                                    MediaType.get("image/jpeg"),
+                                    bytes
+                                ))
+                        )
+                        Log.d("ProfileActivity", result.message)
+                        withContext(Dispatchers.Main) {
+                            "上传成功".toast()
+                        }
+                    } catch (e: Exception) {
+                        Result.onError(e)
+                    }
                 }
             }
-        }
-        Glide.with(this@ProfileActivity)
-            .load(it)
-            .error(R.drawable.err_avatar)
-            .into(binding.ivHeader)
+            Glide.with(this@ProfileActivity)
+                .load(it)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .error(R.drawable.err_avatar)
+                .into(binding.ivHeader)
+        } catch (ignore: Throwable) { }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (BaseApp.darkMode) {
+            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+        }
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         super.onCreate(savedInstanceState)
         window.enterTransition = MaterialFadeThrough().apply {
@@ -94,6 +112,11 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
         initView()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.profile_menu, menu)
+        return true
+    }
+
     private fun initView() {
         val user = User.fromSp()
         binding.run {
@@ -101,6 +124,13 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
                 tvDayNightMode.text = "跟随系统"
             } else {
                 tvDayNightMode.text = "手动调节"
+            }
+            setSupportActionBar(toolbar)
+            supportActionBar?.run {
+                setDisplayHomeAsUpEnabled(true)
+            }
+            toolbar.setNavigationOnClickListener {
+                finishAfterTransition()
             }
             toolbar.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -121,12 +151,23 @@ class ProfileActivity : BaseBindActivity<ActivityProfileBinding>() {
             headerLayout.title = user.username
             Glide.with(this@ProfileActivity)
                 .load(user.avatarUrl)
+                .signature(ObjectKey(""))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .error(R.drawable.err_avatar)
                 .into(ivHeader)
             tvUsername.text = user.username
             tvName.text = user.name
             tvStuId.text = user.stuId.toString()
             tvEmail.text = user.email
+            ivHeader.setOnClickListener {
+                PhotoViewer
+                    .setClickSingleImg(user.avatarUrl, ivHeader)
+                    .setShowImageViewInterface(object : PhotoViewer.ShowImageViewInterface {
+                        override fun show(iv: ImageView, url: String) {
+                            Glide.with(iv.context).load(user.avatarUrl).into(iv)
+                        }
+                    }).start(this@ProfileActivity)
+            }
         }
     }
 

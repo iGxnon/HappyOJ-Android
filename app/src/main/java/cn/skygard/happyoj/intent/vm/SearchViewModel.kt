@@ -68,13 +68,13 @@ class SearchViewModel : BaseViewModel<SearchState, SearchAction, SearchEvent>(Se
                 Log.d("SearchViewModel", tasks.toString())
                 mViewStates.setState {
                     copy(result = tasks.map { t ->
-                        AppDatabase.INSTANCE.taskDao()
                         Task.TaskSubject(
                             id = t.tid,
                             title = t.title,
                             summary = t.summary,
                             updateTime =  t.date,
-                            imageUrl = t.imageUrl
+                            imageUrl = t.imageUrl,
+                            deadline = t.deadline
                         )
                     })
                 }

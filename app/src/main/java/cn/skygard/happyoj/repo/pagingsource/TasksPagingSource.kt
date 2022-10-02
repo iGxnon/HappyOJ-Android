@@ -40,6 +40,7 @@ class TasksPagingSource : BasePagingSource<Task.TaskSubject>() {
                     imageUrl = task.imageUrl,
                     mdContent = task.mdText!!,
                     date = task.updateTime,
+                    deadline = task.deadline!!
                 ))
             }
         }

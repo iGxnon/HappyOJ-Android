@@ -8,7 +8,8 @@ data class LabState(
     val menuVisibility: Boolean = true,
     val contentFetchState: FetchState = FetchState.Fetched,
     val mdContent: String = "",
-    val repoCommitPaging: PagingData<RepoCommit> = PagingData.empty()
+    val repoCommitPaging: PagingData<RepoCommit> = PagingData.empty(),
+    val favorState: Boolean = false,
 )
 
 sealed class LabAction{
@@ -19,6 +20,8 @@ sealed class LabAction{
     data class FetchContent(val noCache: Boolean = false) : LabAction()
     object ScrollToTop : LabAction()
     data class SubmitRepoUrl(val url: String, val desc: String = "") : LabAction()
+    data class EditFavor(val tid: Long) : LabAction()
+    data class RefreshFavorState(val tid: Long) : LabAction()
 }
 
 sealed class LabEvent {

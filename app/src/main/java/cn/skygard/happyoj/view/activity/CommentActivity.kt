@@ -5,10 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.visible
 import cn.skygard.common.base.ui.BaseBindActivity
@@ -64,6 +66,11 @@ class CommentActivity : BaseVmBindActivity<CommentViewModel, ActivityCommentBind
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (BaseApp.darkMode) {
+            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
+        }
         super.onCreate(savedInstanceState)
         initView()
         initViewStates()

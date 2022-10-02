@@ -2,64 +2,8 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c787eb8dca1c4f93c9439259c0a7c90c",
+    "identityHash": "739034608c9ee4007d2aeb44125de04c",
     "entities": [
-      {
-        "tableName": "t_login_users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `username` TEXT NOT NULL, `avatar_url` TEXT NOT NULL, `email` TEXT NOT NULL, `id_token` TEXT NOT NULL, `access_token` TEXT NOT NULL, `refresh_token` TEXT NOT NULL, PRIMARY KEY(`uid`))",
-        "fields": [
-          {
-            "fieldPath": "uid",
-            "columnName": "uid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "name",
-            "columnName": "username",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "avatarUrl",
-            "columnName": "avatar_url",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "email",
-            "columnName": "email",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "idToken",
-            "columnName": "id_token",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "accessToken",
-            "columnName": "access_token",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "refreshToken",
-            "columnName": "refresh_token",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "uid"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
       {
         "ftsVersion": "FTS4",
         "ftsOptions": {
@@ -74,7 +18,7 @@
         },
         "contentSyncTriggers": [],
         "tableName": "t_tasks",
-        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`title` TEXT NOT NULL, `summary` TEXT NOT NULL DEFAULT '', `image_url` TEXT NOT NULL DEFAULT '', `md_content` TEXT NOT NULL DEFAULT '', `date` TEXT NOT NULL, tokenize=icu)",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`title` TEXT NOT NULL, `summary` TEXT NOT NULL DEFAULT '', `image_url` TEXT NOT NULL DEFAULT '', `md_content` TEXT NOT NULL DEFAULT '', `deadline` TEXT NOT NULL DEFAULT '', `date` TEXT NOT NULL, tokenize=icu)",
         "fields": [
           {
             "fieldPath": "title",
@@ -104,6 +48,13 @@
             "defaultValue": "''"
           },
           {
+            "fieldPath": "deadline",
+            "columnName": "deadline",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          },
+          {
             "fieldPath": "date",
             "columnName": "date",
             "affinity": "TEXT",
@@ -123,7 +74,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c787eb8dca1c4f93c9439259c0a7c90c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '739034608c9ee4007d2aeb44125de04c')"
     ]
   }
 }

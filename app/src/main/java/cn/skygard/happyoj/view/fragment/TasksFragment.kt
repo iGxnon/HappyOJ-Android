@@ -13,6 +13,7 @@ import cn.skygard.common.mvi.ext.observeEvent
 import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.databinding.FragmentTasksBinding
 import cn.skygard.happyoj.domain.logic.UserManager
+import cn.skygard.happyoj.domain.model.User
 import cn.skygard.happyoj.intent.state.*
 import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.intent.vm.TasksViewModel
@@ -63,6 +64,16 @@ class TasksFragment : BaseVmBindFragment<TasksViewModel, FragmentTasksBinding>()
                 "请登录后获取实验".toast()
                 binding.srlTasks.isRefreshing = false
             }
+        }
+        if (UserManager.checkLogin()) {
+            tasksAdapter.refresh()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (UserManager.checkLogin()) {
+            tasksAdapter.refresh()
         }
     }
 

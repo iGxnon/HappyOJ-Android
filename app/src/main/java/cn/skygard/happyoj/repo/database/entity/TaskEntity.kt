@@ -17,6 +17,8 @@ data class TaskEntity(
     val imageUrl: String,
     @ColumnInfo(name = "md_content", defaultValue = "")
     val mdContent: String,
+    @ColumnInfo(name = "deadline", defaultValue = "")
+    val deadline: String,
     @ColumnInfo(name = "date")
     val date: String,
 )

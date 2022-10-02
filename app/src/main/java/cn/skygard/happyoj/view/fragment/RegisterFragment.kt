@@ -1,23 +1,18 @@
 package cn.skygard.happyoj.view.fragment
 
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.visible
 import cn.skygard.common.base.ui.BaseBindFragment
-import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.databinding.FragmentRegisterBinding
 import cn.skygard.happyoj.intent.state.LoginAction
-import cn.skygard.happyoj.intent.state.LoginState
-import cn.skygard.happyoj.intent.vm.LabViewModel
 import cn.skygard.happyoj.intent.vm.LoginViewModel
-import cn.skygard.happyoj.repo.remote.RetrofitHelper
-import kotlinx.coroutines.launch
-import java.nio.Buffer
 import java.util.regex.Pattern
 
 class RegisterFragment : BaseBindFragment<FragmentRegisterBinding>() {
@@ -44,15 +39,15 @@ class RegisterFragment : BaseBindFragment<FragmentRegisterBinding>() {
                 viewModel.dispatch(LoginAction.SendCode(email = etEmail.text.toString()))
             }
             etUsername.addTextChangedListener {
-                it?: return@addTextChangedListener
-                if (it.toString().contains(" "))
-                    binding.tilUsername.error = "不能有空格"
-                else
-                    binding.tilUsername.isErrorEnabled = false
+                val str = etUsername.text.toString()
+                if (str.contains(" ")) {
+                    tilUsername.error = "不能有空格"
+                } else {
+                    tilUsername.isErrorEnabled = false
+                }
             }
             etPwd.addTextChangedListener {
-                it?: return@addTextChangedListener
-                val pwd = it.toString()
+                val pwd = etPwd.text.toString()
                 val err = mutableListOf<String>()
                 val errBuf = StringBuilder()
                 if (pwd.length < 6 || pwd.length > 32)
@@ -64,7 +59,7 @@ class RegisterFragment : BaseBindFragment<FragmentRegisterBinding>() {
                 if (!Pattern.compile("[0-9]").matcher(pwd).find())
                     err.add("数字")
                 err.joinTo(errBuf, separator = ",")
-                binding.tilPwd.error = errBuf.toString()
+                tilPwd.error = errBuf
             }
         }
     }

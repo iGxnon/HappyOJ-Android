@@ -18,7 +18,7 @@ class LoginFragment : BaseBindFragment<FragmentLoginBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.run {
             btnLogin.setOnClickListener(LoginCallback())
-            tvRegister.setOnClickListener {
+            btnRegister.setOnClickListener {
                 viewModel.dispatch(LoginAction.ChangePage(false))
             }
         }

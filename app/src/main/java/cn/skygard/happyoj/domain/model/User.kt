@@ -2,7 +2,6 @@ package cn.skygard.happyoj.domain.model
 
 import cn.skygard.common.base.ext.defaultSp
 import cn.skygard.happyoj.domain.logic.UserManager
-import cn.skygard.happyoj.repo.database.entity.LoginUserEntity
 
 data class User (
     val name: String,

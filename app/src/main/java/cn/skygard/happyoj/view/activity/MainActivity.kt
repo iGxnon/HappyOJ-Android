@@ -25,12 +25,14 @@ import cn.skygard.happyoj.intent.vm.MainViewModel
 import cn.skygard.happyoj.domain.logic.UserManager
 import cn.skygard.happyoj.domain.model.User
 import cn.skygard.happyoj.intent.state.MainAction
+import cn.skygard.happyoj.view.fragment.FavorFragment
 import cn.skygard.happyoj.view.fragment.TasksFragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback
+import kotlin.random.Random
 
 class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
 
@@ -216,6 +218,10 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                         }
                         R.id.nav_favor -> {
                             Log.d("MainActivity", "navigation to favor")
+                            switchToolbar(true)
+                            replaceFragment(R.id.frag_container) {
+                                FavorFragment.newInstance()
+                            }
                         }
 //                        R.id.nav_submits -> {
 //                            Log.d("MainActivity", "navigation to submits")
@@ -250,10 +256,12 @@ class MainActivity : BaseVmBindActivity<MainViewModel, ActivityMainBinding>() {
                         email.text = user.email
                         Glide.with(this@MainActivity)
                             .load(user.avatarUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .error(R.drawable.err_avatar)
                             .into(sivProfile)
                         Glide.with(this@MainActivity)
                             .load(user.avatarUrl)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .error(R.drawable.err_avatar)
                             .into(binding.ivProfileOpen)
                     }

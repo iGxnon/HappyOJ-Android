@@ -84,6 +84,8 @@ dependencies {
 
     debugImplementation 'com.github.whataa:pandora:androidx_v2.0.3'
 
+    implementation 'com.github.wanglu1209:PhotoViewer:0.50'
+
     implementation "androidx.paging:paging-runtime:3.1.1"
     testImplementation "androidx.paging:paging-common:3.1.1"
 

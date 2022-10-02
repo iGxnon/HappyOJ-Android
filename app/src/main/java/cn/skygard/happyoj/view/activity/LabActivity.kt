@@ -5,12 +5,14 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -18,9 +20,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.adapter.BaseVPAdapter
-import cn.skygard.common.base.ext.color
-import cn.skygard.common.base.ext.dp2px
-import cn.skygard.common.base.ext.lazyUnlock
+import cn.skygard.common.base.ext.*
 import cn.skygard.common.mvi.BaseVmBindActivity
 import cn.skygard.common.mvi.ext.observeEvent
 import cn.skygard.common.mvi.ext.observeState
@@ -49,6 +49,7 @@ import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.regex.Pattern
 import com.google.android.material.transition.platform.MaterialFadeThrough
+import java.text.SimpleDateFormat
 
 class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
 
@@ -65,6 +66,7 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
             imageUrl = intent.getStringExtra("task_img")!!,
             updateTime = intent.getStringExtra("task_date")!!,
             summary = intent.getStringExtra("task_summary")!!,
+            deadline = intent.getStringExtra("task_ddl")!!
         )
     }
 
@@ -153,6 +155,13 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                     }
                 }
             }
+            observeState(this@LabActivity, LabState::favorState) {
+                if (it) {
+                    binding.fabFavor.setImageDrawable(AppCompatResources.getDrawable(this@LabActivity, R.drawable.ic_star_24))
+                } else {
+                    binding.fabFavor.setImageDrawable(AppCompatResources.getDrawable(this@LabActivity, R.drawable.ic_star_border_24))
+                }
+            }
         }
     }
 
@@ -171,6 +180,7 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
     }
 
     private fun initView() {
+        viewModel.dispatch(LabAction.RefreshFavorState(taskItem.id))
         binding.apply {
             setSupportActionBar(toolbar)
             supportActionBar?.run {
@@ -243,8 +253,24 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 Log.d("LabActivity", "scroll to top.")
                 viewModel.dispatch(LabAction.ScrollToTop)
             }
-            fabRepo.setOnClickListener {
-                showSubmitRepoUrl()
+            try {
+                val ddl = SimpleDateFormat(
+                    "yyyy-MM-dd hh:mm:ss",
+                    Locale.CHINA
+                ).parse(taskItem.deadline!!)!!
+                if (ddl.after(Calendar.getInstance().time)) {
+                    fabRepo.visible()
+                    fabRepo.setOnClickListener {
+                        showSubmitRepoUrl()
+                    }
+                } else {
+                    fabRepo.gone()
+                }
+            } catch (e: Exception) {
+                "发生未知错误".toast()
+            }
+            fabFavor.setOnClickListener {
+                viewModel.dispatch(LabAction.EditFavor(taskItem.id))
             }
         }
     }
@@ -317,6 +343,7 @@ class LabActivity : BaseVmBindActivity<LabViewModel, ActivityLabBinding>() {
                 .putExtra("task_img", task.imageUrl)
                 .putExtra("task_date", task.updateTime)
                 .putExtra("task_summary", task.summary)
+                .putExtra("task_ddl", task.deadline)
             if (ctx is Activity) {
                 ctx.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ctx).toBundle())
             } else {
