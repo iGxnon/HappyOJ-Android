@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?colorPrimary"
+    android:background="?colorPrimaryVariant"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,7 +20,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?colorPrimary"
+                android:background="?colorPrimaryVariant"
                 app:layout_scrollFlags="scroll|enterAlways|snap"
                 tools:title="测试题目"
                 app:titleTextColor="?colorOnPrimary" />
@@ -30,10 +30,10 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
+        android:background="?colorPrimaryVariant"
         android:layout_width="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:layout_height="0dp">
-
         <TextView
             android:id="@+id/tv_no_comment"
             android:visibility="gone"
@@ -43,32 +43,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText" />
-
-        <androidx.core.widget.NestedScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_comment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_weight="5"
+        android:layout_height="0dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="?colorPrimary"
+            app:shapeAppearance="@style/UpRoundStyle">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_comment"
+                android:layout_marginTop="35dp"
+                android:id="@+id/rv_submit_checkpoints"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </androidx.core.widget.NestedScrollView>
+        </com.google.android.material.card.MaterialCardView>
 
-    </FrameLayout>
-
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_weight="3"
-        android:layout_height="0dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_submit_checkpoints"
-            android:layout_width="match_parent"
+        <com.github.clans.fab.FloatingActionButton
+            android:layout_gravity="end"
+            android:layout_marginEnd="38dp"
+            android:src="@drawable/ic_upload_24"
+            app:fab_colorNormal="@color/green_bg_tint"
+            app:fab_colorPressed="@color/green_bg_tint"
+            app:rippleColor="@color/white"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-    </androidx.core.widget.NestedScrollView>
+    </FrameLayout>
 
 
 </LinearLayout>

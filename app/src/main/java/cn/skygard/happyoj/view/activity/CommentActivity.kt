@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import cn.skygard.common.base.BaseApp
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.visible
@@ -52,7 +53,7 @@ class CommentActivity : BaseVmBindActivity<CommentViewModel, ActivityCommentBind
         get() = ContextCompat.getColor(this, R.color.prime_color)
 
     override val statusBarColor: Int
-        get() = ContextCompat.getColor(this, R.color.prime_color)
+        get() = ContextCompat.getColor(this, R.color.prime_color_variant)
 
     override val isCancelStatusBar: Boolean
         get() = false
@@ -85,7 +86,9 @@ class CommentActivity : BaseVmBindActivity<CommentViewModel, ActivityCommentBind
             supportActionBar?.title = title
             rvComment.run {
                 adapter = commentRvAdapter
-                layoutManager = LinearLayoutManager(this@CommentActivity)
+                layoutManager = LinearLayoutManager(this@CommentActivity).apply {
+                    orientation = RecyclerView.HORIZONTAL
+                }
             }
             rvSubmitCheckpoints.run {
                 adapter = checkpointsRvAdapter
