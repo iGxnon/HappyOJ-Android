@@ -30,86 +30,25 @@ class CommentViewModel(val taskId: Long) :
 
     private fun getData() {
         viewModelScope.launch {
-            delay(200)
-            mViewStates.setState {
-                copy(comments = listOf(
-                    Comments.CommitComment(
-                        comment = "好！写的好！",
-                        commitId = 114514,
-                        createTime = "2022-10-12",
-                        id = 11451419,
-                        score = 100,
-                        tutorName = "泡泡",
-                        updateTime = "2022-10-12"
-                    ),
-                    Comments.CommitComment(
-                        comment = "好！写的好！",
-                        commitId = 114514,
-                        createTime = "2022-10-12",
-                        id = 11451419,
-                        score = 100,
-                        tutorName = "泡泡",
-                        updateTime = "2022-10-12"),
-                    Comments.CommitComment(
-                        comment = "好！写的好！",
-                        commitId = 114514,
-                        createTime = "2022-10-12",
-                        id = 11451419,
-                        score = 100,
-                        tutorName = "泡泡",
-                        updateTime = "2022-10-12")
-                ))
+            try {
+                val commit = RetrofitHelper.taskService.getTaskCommit(tid = taskId)
+                if (commit.ok) {
+                    val comment =
+                        RetrofitHelper.taskService.getTaskComment(commit.data.commitIndex.id)
+                    if (comment.ok && comment.data.commitComment != null) {
+                        mViewStates.setState {
+                            copy(comments = comment.data.commitComment)
+                        }
+                    }
+                }
+            }catch (e: Exception) {
+                if (e is HttpException) {
+                    Result.onError(e)
+                    mViewStates.setState {
+                        copy(fetchState = FetchState.NotFetched)
+                    }
+                }
             }
-            mViewStates.setState {
-                copy(submits = listOf(
-                    SubmitsItem(
-                        submitId = 1,
-                        submitUid = 11,
-                        submitTitle = "测试1",
-                        checkPointNum = 2,
-                        checkPointLabels = listOf(SubmitLabel.Accept, SubmitLabel.Accept),
-                        submitScore = 100,
-                        submitAt = Calendar.getInstance().time
-                    ), SubmitsItem(
-                        submitId = 4,
-                        submitUid = 13,
-                        submitTitle = "测试2",
-                        checkPointNum = 3,
-                        checkPointLabels = listOf(SubmitLabel.Accept, SubmitLabel.Accept, SubmitLabel.Accept),
-                        submitScore = 100,
-                        submitAt = Calendar.getInstance().time
-                    ), SubmitsItem(
-                        submitId = 5,
-                        submitUid = 12,
-                        submitTitle = "测试3",
-                        checkPointNum = 6,
-                        checkPointLabels = listOf(
-                            SubmitLabel.Accept, SubmitLabel.Accept, SubmitLabel.TimeLimitError,
-                            SubmitLabel.Accept, SubmitLabel.Accept, SubmitLabel.Accept),
-                        submitScore = 80,
-                        submitAt = Calendar.getInstance().time
-                    )
-                ))
-            }
-//            try {
-//                val commit = RetrofitHelper.taskService.getTaskCommit(tid = taskId)
-//                if (commit.ok) {
-//                    val comment =
-//                        RetrofitHelper.taskService.getTaskComment(commit.data.commitIndex.id)
-//                    if (comment.ok && comment.data.commitComment != null) {
-//                        mViewStates.setState {
-//                            copy(comments = comment.data.commitComment)
-//                        }
-//                    }
-//                }
-//            }catch (e: Exception) {
-//                if (e is HttpException) {
-//                    Result.onError(e)
-//                    mViewStates.setState {
-//                        copy(fetchState = FetchState.NotFetched)
-//                    }
-//                }
-//            }
         }
     }
 

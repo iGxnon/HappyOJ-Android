@@ -24,10 +24,10 @@ class CommentRvAdapter :
         @SuppressLint("SetTextI18n")
         fun bind(item: Comments.CommitComment) {
             binding.run {
-                tvTutor.text = "导师: ${item.tutorName}"
-                tvComment.text = "附言: ${item.comment}"
-                tvScore.text = "分数: ${item.score} 分"
-                tvTime.text = item.updateTime
+                tvTutor.text = item.tutorName
+                tvComment.text = item.comment
+                tvScore.text = "${item.score}"
+                tvTime.text = item.updateTime.split(" ")[0]
             }
         }
     }
