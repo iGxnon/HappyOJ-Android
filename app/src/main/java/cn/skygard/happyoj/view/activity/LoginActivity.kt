@@ -19,8 +19,10 @@ import cn.skygard.happyoj.R
 import cn.skygard.happyoj.databinding.ActivityLoginBinding
 import cn.skygard.happyoj.intent.state.LoginEvent
 import cn.skygard.happyoj.intent.state.LoginState
+import cn.skygard.happyoj.intent.state.Page
 import cn.skygard.happyoj.intent.vm.LoginViewModel
 import cn.skygard.happyoj.repo.remote.RetrofitHelper
+import cn.skygard.happyoj.view.fragment.ChangePasswordFragment
 import cn.skygard.happyoj.view.fragment.LoginFragment
 import cn.skygard.happyoj.view.fragment.RegisterFragment
 import com.google.android.material.snackbar.Snackbar
@@ -76,6 +78,8 @@ class LoginActivity : BaseVmBindActivity<LoginViewModel, ActivityLoginBinding>()
                     }
                     is LoginEvent.MailSuccess -> "发送成功"
                     is LoginEvent.MailFailed -> "发送失败"
+                    is LoginEvent.ChangePwdSuccess -> "修改成功"
+                    is LoginEvent.ChangePwdFailed -> "修改失败"
                 }
                 toastStr.toast()
             }
@@ -84,16 +88,25 @@ class LoginActivity : BaseVmBindActivity<LoginViewModel, ActivityLoginBinding>()
 
     private fun initViewStates() {
         viewModel.viewStates.run {
-            observeState(this@LoginActivity, LoginState::isLoginPage) {
-                if (it) {
-                    binding.tvLogin.text = "登录"
-                    replaceFragment(R.id.frag_container) {
-                        LoginFragment.newInstance()
+            observeState(this@LoginActivity, LoginState::page) {
+                when (it) {
+                    Page.LOGIN -> {
+                        binding.tvLogin.text = "登录"
+                        replaceFragment(R.id.frag_container) {
+                            LoginFragment.newInstance()
+                        }
                     }
-                } else {
-                    binding.tvLogin.text = "注册"
-                    replaceFragment(R.id.frag_container) {
-                        RegisterFragment.newInstance()
+                    Page.CHANGE_PWD -> {
+                        binding.tvLogin.text = "修改密码"
+                        replaceFragment(R.id.frag_container) {
+                            ChangePasswordFragment.newInstance()
+                        }
+                    }
+                    Page.REGISTER -> {
+                        binding.tvLogin.text = "注册"
+                        replaceFragment(R.id.frag_container) {
+                            RegisterFragment.newInstance()
+                        }
                     }
                 }
             }

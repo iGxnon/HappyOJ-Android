@@ -41,6 +41,19 @@ object UserManager {
         return LoginEvent.MailFailed
     }
 
+    suspend fun changePwdMail(email: String): LoginEvent {
+        try {
+            RetrofitHelper.userService.changePwdMail(email).run {
+                if (this.ok) {
+                    return LoginEvent.MailSuccess
+                }
+            }
+        } catch (e: Exception) {
+            Result.onError(e)
+        }
+        return LoginEvent.MailFailed
+    }
+
     suspend fun register(username: String, email: String, stuId: String,
                          code: String, pwd: String, name: String): LoginEvent {
         try {

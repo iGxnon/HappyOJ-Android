@@ -1,22 +1,32 @@
 package cn.skygard.happyoj.intent.state
 
 data class LoginState(
-    val isLoginPage: Boolean = true,
+    val page: Page = Page.LOGIN,
 )
 
 sealed class LoginAction {
-    data class ChangePage(val isLoginPage: Boolean) : LoginAction()
+    data class ChangePage(val page: Page) : LoginAction()
     data class Register(val username: String, val email: String, val stuId: String,
                         val code: String, val pwd: String, val name: String) : LoginAction()
-    data class SendCode(val email: String) : LoginAction()
+    data class SendRegisterCode(val email: String) : LoginAction()
+    data class SendPwdCode(val email: String) : LoginAction()
     data class Login(val username: String, val pwd: String) : LoginAction()
+    data class ChangePwd(val code: String, val pwd: String) : LoginAction()
 }
 
 sealed class LoginEvent {
     object LoginFailed : LoginEvent()
     object LoginSuccess : LoginEvent()
-    object RegisterSuccess: LoginEvent()
-    object RegisterFailed: LoginEvent()
-    object MailSuccess: LoginEvent()
-    object MailFailed: LoginEvent()
+    object RegisterSuccess : LoginEvent()
+    object RegisterFailed : LoginEvent()
+    object MailSuccess : LoginEvent()
+    object MailFailed : LoginEvent()
+    object ChangePwdSuccess : LoginEvent()
+    object ChangePwdFailed : LoginEvent()
+}
+
+enum class Page {
+    LOGIN,
+    REGISTER,
+    CHANGE_PWD,
 }

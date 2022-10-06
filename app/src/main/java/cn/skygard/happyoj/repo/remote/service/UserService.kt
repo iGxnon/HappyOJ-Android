@@ -17,6 +17,12 @@ interface UserService {
         @Field("email") email: String
     ): Result<Any>
 
+    @PATCH("user/password")
+    @FormUrlEncoded
+    suspend fun changePwdMail(
+        @Field("email") email: String
+    ): Result<Any>
+
     @POST("user/register")
     @FormUrlEncoded
     suspend fun register(
@@ -44,6 +50,11 @@ interface UserService {
         @Part imgFile: MultipartBody.Part
     ): Result<Any>
 
+    @GET("user/password/confirm")
+    suspend fun resetPwd(
+        @Query("code") code: String,
+        @Query("password") pwd: String
+    ): Result<Any>
 
 //
 //    @POST("user/password")

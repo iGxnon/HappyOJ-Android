@@ -9,6 +9,7 @@ import cn.skygard.common.mvi.ext.observeState
 import cn.skygard.happyoj.databinding.FragmentLoginBinding
 import cn.skygard.happyoj.intent.state.LoginAction
 import cn.skygard.happyoj.intent.state.LoginState
+import cn.skygard.happyoj.intent.state.Page
 import cn.skygard.happyoj.intent.vm.LoginViewModel
 
 class LoginFragment : BaseBindFragment<FragmentLoginBinding>() {
@@ -19,7 +20,10 @@ class LoginFragment : BaseBindFragment<FragmentLoginBinding>() {
         binding.run {
             btnLogin.setOnClickListener(LoginCallback())
             btnRegister.setOnClickListener {
-                viewModel.dispatch(LoginAction.ChangePage(false))
+                viewModel.dispatch(LoginAction.ChangePage(page = Page.REGISTER))
+            }
+            tvForgetPwd.setOnClickListener {
+                viewModel.dispatch(LoginAction.ChangePage(page = Page.CHANGE_PWD))
             }
         }
     }

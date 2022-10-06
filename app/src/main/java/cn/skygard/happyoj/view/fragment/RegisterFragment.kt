@@ -1,11 +1,8 @@
 package cn.skygard.happyoj.view.fragment
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import cn.skygard.common.base.ext.gone
 import cn.skygard.common.base.ext.visible
@@ -28,7 +25,7 @@ class RegisterFragment : BaseBindFragment<FragmentRegisterBinding>() {
                     "邮箱不符合规范".toast()
                     return@setOnClickListener
                 }
-                viewModel.dispatch(LoginAction.SendCode(email = etEmail.text.toString()))
+                viewModel.dispatch(LoginAction.SendRegisterCode(email = etEmail.text.toString()))
             }
             btnRegister.setOnClickListener(RegisterCallback())
             tvResend.setOnClickListener {
@@ -36,7 +33,7 @@ class RegisterFragment : BaseBindFragment<FragmentRegisterBinding>() {
                     "邮箱不符合规范".toast()
                     return@setOnClickListener
                 }
-                viewModel.dispatch(LoginAction.SendCode(email = etEmail.text.toString()))
+                viewModel.dispatch(LoginAction.SendRegisterCode(email = etEmail.text.toString()))
             }
             etUsername.addTextChangedListener {
                 val str = etUsername.text.toString()
@@ -48,18 +45,7 @@ class RegisterFragment : BaseBindFragment<FragmentRegisterBinding>() {
             }
             etPwd.addTextChangedListener {
                 val pwd = etPwd.text.toString()
-                val err = mutableListOf<String>()
-                val errBuf = StringBuilder()
-                if (pwd.length < 6 || pwd.length > 32)
-                    err.add("长度6-32")
-                if (pwd.lowercase() == pwd || pwd.uppercase() == pwd)
-                    err.add("大小写字符")
-                if (!Pattern.compile("[@!$^&*+_.:=|{}';,<>/?~]").matcher(pwd).find())
-                    err.add("特殊字符")
-                if (!Pattern.compile("[0-9]").matcher(pwd).find())
-                    err.add("数字")
-                err.joinTo(errBuf, separator = ",")
-                tilPwd.error = errBuf
+                tilPwd.error = Utils.getPwdError(pwd)
             }
         }
     }

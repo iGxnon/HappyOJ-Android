@@ -70,6 +70,7 @@
         <entry key="app/src/main/res/layout/dialog_setting_day_night.xml" value="0.3713768115942029" />
         <entry key="app/src/main/res/layout/fragment_captcha.xml" value="0.32065217391304346" />
         <entry key="app/src/main/res/layout/fragment_favor.xml" value="0.3229166666666667" />
+        <entry key="app/src/main/res/layout/fragment_forget_pwd.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/layout/fragment_gallery.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3302083333333333" />
         <entry key="app/src/main/res/layout/fragment_lab_commit.xml" value="0.32065217391304346" />
